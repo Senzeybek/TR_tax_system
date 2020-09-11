@@ -48,7 +48,7 @@ odd_2017 <- left_join( unique(odd_2017),unique(co2), by = c('make','model','subm
 odd_2017<- odd_2017 %>% select('make','model','submodel','segment','version','engine_size','transmission','body_type',
                                'fuel_type','production','motor_power','gross_vehicle_weight','co2_emission',sales="sales.x","mtvgroup")
 
-manual_emission_update_2017()
+
 sum(odd_2017$sales,na.rm=T)
 odd_2017$year <- 2017
 
