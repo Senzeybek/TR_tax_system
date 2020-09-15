@@ -1,0 +1,144 @@
+
+source("1_preparation.R")
+
+#verinin sadelestirilmesi ve yillik forecast rakamlarinin uygulanmasi
+
+data <- odd_2020 %>% filter(!is.na(fiyat),!is.na(engine_displacement)) %>% 
+  select(-kampanya,-kampanya_fiyat,-turetilme_sebebi,-turetildigi_satir,-max_hiz,-hizlanma,
+         -kapi,-piyasadan_cikis,-piyasaya_giris,-ocak:-agustos,-turbo_motor,-start_stop)
+
+
+
+data$sales_2020 <- round(data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+
+
+
+
+
+
+#eski OTV oranlari ----
+
+data <- data %>% mutate(eski_otv_grubu = case_when(
+  between(engine_displacement,0,1600)& between(fiyat,0, 119770) ~ 1,
+  between(engine_displacement,0,1600)& between(fiyat,119770,212400) ~ 2,
+  between(engine_displacement,0,1600)& between(fiyat,212400,Inf) ~ 3,
+  between(engine_displacement,1601,2000)& between(fiyat,0,401200) ~ 4,
+  between(engine_displacement,1601,2000)& between(fiyat,401200,Inf) ~ 5,
+  between(engine_displacement,2001,Inf)& between(fiyat,0,Inf) ~ 6,
+  TRUE ~ 0
+))
+
+#hybrid incentives
+data[data$powertrain=="Hybrid",] <- data%>% filter(powertrain=="Hybrid") %>% mutate(eski_otv_grubu=case_when(
+  between(engine_displacement,0,1600) & between(fiyat,0, 119770) ~ 1,
+  between(engine_displacement,0,1600) & between(fiyat,119770,212400) ~ 2,
+  between(engine_displacement,0,1600) & between(fiyat,212400,Inf) ~ 3,
+  between(engine_displacement,1601,1800) & between(fiyat,0,145435) ~ 1,
+  between(engine_displacement,1601,1800) & between(fiyat,145435,238950) ~ 2,
+  between(engine_displacement,1601,1800) & between(fiyat,238950,Inf) ~ 3,
+  between(engine_displacement,2001,2500) & between(fiyat,0,401200) ~ 4,
+  between(engine_displacement,2001,2500) & between(fiyat,401200,Inf) ~ 5,
+  between(engine_displacement,1801,2000) & between(fiyat,0,401200) ~ 4,
+  between(engine_displacement,1801,2000) & between(fiyat,401200,Inf) ~ 5,
+  between(engine_displacement,2001,Inf)  & between(fiyat,0,Inf) ~ 6,
+  TRUE ~ 0
+))
+
+
+
+#net fiyat bulunmasi ----
+data$eski_otv_orani <- eski_otv_oranlari$eski_otv_orani[match(data$eski_otv_grubu,eski_otv_oranlari$otv_grup)]
+data$kdv_orani <- 0.18
+data <- data %>% mutate(net_fiyat= fiyat/((1+eski_otv_orani)*(1+kdv_orani)))
+
+
+# mevcut OTV gruplari
+
+data <- data %>% mutate(mevcut_otv_grubu = case_when(
+  between(engine_displacement,0,1600)& between(net_fiyat,0, 85000) ~ 1,
+  between(engine_displacement,0,1600)& between(net_fiyat,85000,130000) ~ 2,
+  between(engine_displacement,0,1600)& between(net_fiyat,130000,Inf) ~ 3,
+  between(engine_displacement,1601,2000)& between(net_fiyat,0,170000) ~ 4,
+  between(engine_displacement,1601,2000)& between(net_fiyat,170000,Inf) ~ 5,
+  between(engine_displacement,2001,Inf)& between(net_fiyat,0,Inf) ~ 6,
+  TRUE ~ 0
+))
+
+#hybrid incentives
+data[data$powertrain=="Hybrid",] <- data%>% filter(powertrain=="Hybrid") %>% 
+  mutate(mevcut_otv_grubu=case_when(
+    between(engine_displacement,0,1600)& between(net_fiyat,0, 85000) ~ 1,
+    between(engine_displacement,0,1600)& between(net_fiyat,85000,130000) ~ 2,
+    between(engine_displacement,0,1600)& between(net_fiyat,130000,Inf) ~ 3,
+    between(engine_displacement,1601,1800)& between(net_fiyat,0,85000) ~ 1,
+    between(engine_displacement,1601,1800)& between(net_fiyat,85000,135000) ~ 2,
+    between(engine_displacement,1601,1800)& between(net_fiyat,135000,Inf) ~ 3,
+    between(engine_displacement,2001,2500)& between(net_fiyat,0,170000) ~ 4,
+    between(engine_displacement,2001,2500)& between(net_fiyat,170000,Inf) ~ 5,
+    between(engine_displacement,1801,2000)& between(net_fiyat,0,170000) ~ 4,
+    between(engine_displacement,1801,2000)& between(net_fiyat,170000,Inf) ~ 5,
+    between(engine_displacement,2001,Inf)& between(net_fiyat,0,Inf) ~ 6,
+    TRUE ~ 0
+  ))
+
+
+# yeni OTV oranlari
+data$mevcut_otv_orani <- mevcut_otv_oranlari$mevcut_otv_orani[match(data$mevcut_otv_grubu,mevcut_otv_oranlari$otv_grup)]
+data <- data %>% mutate(mevcut_otv_tutari = net_fiyat*mevcut_otv_orani,
+                        kdv_tutari = (net_fiyat+mevcut_otv_tutari)*kdv_orani,
+                        mevcut_fiyat =net_fiyat+mevcut_otv_tutari+kdv_tutari)
+
+sum(data$mevcut_otv_tutari*data$sales_2020)/1000000000
+weighted.mean(data$mevcut_otv_tutari,data$sales_2020)
+
+
+#yeni OTV orani 
+
+
+data$yeni_otv_orani <- yeni_otv_oranlari$yeni_otv_orani[match(data$mevcut_otv_grubu,yeni_otv_oranlari$otv_grup)]
+data$co2_vergisi <- yeni_otv_oranlari$co2_vergisi[match(data$mevcut_otv_grubu,yeni_otv_oranlari$otv_grup)]
+
+data <- data %>% mutate(yeni_toplam_otv= (net_fiyat*yeni_otv_orani+co2_vergisi),
+                        yeni_fiyat = (net_fiyat+yeni_toplam_otv)*(1+kdv_orani),
+                        fark=yeni_fiyat-fiyat)
+
+
+
+#toplam otv gelirleri kiyaslamasi
+
+Yeni_toplam_OTV_geliri     <-  sum(data$yeni_toplam_otv*data$sales_2020)/1000000000
+Mevcut_muhtemel_OTV_geliri <- sum(data$mevcut_otv_tutari*data$sales_2020)/1000000000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
