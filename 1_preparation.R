@@ -1,6 +1,5 @@
 # Packages ------------------------------------------------------------------------------------
-lapply(c("rio", "dplyr", "stringr",'readxl','readr',"WriteXLS","tidyr",'forecast','sp','grid','scales','directlabels','tools'), library, character.only = TRUE) # load packages
-
+lapply(c("rio", "stringr","ggthemes","tidyverse","tidyr",'forecast','scales','tools'), library, character.only = TRUE) # load packages
 
 
 # data import ----
@@ -21,21 +20,28 @@ sales_forecast<-  import("r_input/sales_forecast.xls")
 
 #mtv oranlari
 mtv_oranlari <- import("r_input/mtv_oranlari.xlsx",sheet="2020_mtv")
-arac_omru <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[1,1]
+arac_omru <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[1,2]
+mtv_per_co2 <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[2,2]
+otv_grubuna_dayali_mtv <- import("r_input/mtv_oranlari.xlsx",sheet="OTV_grubuna_dayali_MTV")
 
-# total sales until august
+
+# segment karsilastirmalari
+segment_look_up<- import('r_input/esneklik.xlsx',sheet="segments")
+kendi_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[1,2]
+rakip_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[2,2]
+segment_capraz_esneklik <- import('r_input/esneklik.xlsx',sheet="kleit_segment_elasticity")
+
+# Agustosa kadar yillik satislar
 odd_agustos_2019<-  odd_2019 %>% select(-eylul:-aralik)
 odd_agustos_2018<-  odd_2018 %>% select(-eylul:-aralik)
 odd_agustos <- rbind(odd_2020,odd_agustos_2019)
 odd_agustos <- rbind(odd_agustos,odd_agustos_2018)
-colnames(odd_agustos)
 odd_agustos$toplam <- rowSums(odd_agustos[,39:46])
-odd_agustos %>% group_by(year) %>% summarise(sum(toplam))
 
 
 
 
-
+# Grafik ve renkler ---- 
 darken <- function(color, factor=1.4){
   col <- col2rgb(color)
   col <- col/factor
@@ -50,12 +56,51 @@ lighten <- function(color, factor=1.4){
   col
 }
 
+koyu_mavi = "#28364A"
+acik_mavi = "#B2D3E1"
+kirmizi = "#D65353"
+sari = "#F7C45F"  
+
+mavi= "#7293CB"	
+gri = "#E1974C"
+
+
+palet <- c("#555b6e","#89b0ae","#bee3db","#faf9f9","#ffd6ba")
 
 milyar<-1000000000
 
 
-
-
+# Grafik theme 
+theme_Publication <- function(base_size=14, base_family="helvetica") {
+  library(grid)
+  library(ggthemes)
+  (theme_foundation(base_size=base_size, base_family=base_family)
+    + theme(plot.title = element_text(face = "bold",
+                                      size = rel(1.2), hjust = 0.5),
+            text = element_text(),
+            panel.background = element_rect(colour = NA),
+            plot.background = element_rect(colour = NA),
+            panel.border = element_rect(colour = NA),
+            axis.title = element_text(face = "bold",size = rel(1)),
+            axis.title.y = element_text(angle=90,vjust =2),
+            axis.title.x = element_text(vjust = -0.2),
+            axis.text = element_text(), 
+            axis.line = element_line(colour="black"),
+            axis.ticks = element_line(),
+            panel.grid.major = element_line(colour="#f0f0f0"),
+            panel.grid.minor = element_blank(),
+            legend.key = element_rect(colour = NA),
+            legend.position = "bottom",
+            legend.direction = "horizontal",
+            legend.key.size= unit(0.2, "cm"),
+            legend.margin = unit(0, "cm"),
+            legend.title = element_text(face="italic"),
+            plot.margin=unit(c(10,5,5,5),"mm"),
+            strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
+            strip.text = element_text(face="bold")
+    ))
+  
+}
 
 
 

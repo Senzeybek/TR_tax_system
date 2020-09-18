@@ -1,16 +1,20 @@
 
-source("1_preparation.R")
+#source("1_preparation.R")
 
 #verinin sadelestirilmesi ve yillik forecast rakamlarinin uygulanmasi
 
 data <- odd_2020 %>% filter(!is.na(fiyat),!is.na(engine_displacement)) %>% 
   select(-kampanya,-kampanya_fiyat,-turetilme_sebebi,-turetildigi_satir,-max_hiz,-hizlanma,
-         -kapi,-piyasadan_cikis,-piyasaya_giris,-ocak:-agustos,-turbo_motor,-start_stop)
+         -piyasadan_cikis,-piyasaya_giris,-ocak:-agustos,-turbo_motor,-start_stop)
 
 
 
-data$sales_2020 <- round(data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
-
+data$satis_2020 <- round(data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$satis_2021 <- round(data$toplam*(sales_forecast$`2021`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$satis_2022 <- round(data$toplam*(sales_forecast$`2022`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$satis_2023 <- round(data$toplam*(sales_forecast$`2023`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$satis_2024 <- round(data$toplam*(sales_forecast$`2024`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$satis_2025 <- round(data$toplam*(sales_forecast$`2025`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
 
 
 
@@ -88,35 +92,42 @@ data <- data %>% mutate(mevcut_otv_tutari = net_fiyat*mevcut_otv_orani,
                         kdv_tutari = (net_fiyat+mevcut_otv_tutari)*kdv_orani,
                         mevcut_fiyat =net_fiyat+mevcut_otv_tutari+kdv_tutari)
 
-sum(data$mevcut_otv_tutari*data$sales_2020)/1000000000
-weighted.mean(data$mevcut_otv_tutari,data$sales_2020)
+sum(data$mevcut_otv_tutari*data$satis_2020)/milyar
 
 
 #yeni OTV orani 
 
-
 data$yeni_otv_orani <- yeni_otv_oranlari$yeni_otv_orani[match(data$mevcut_otv_grubu,yeni_otv_oranlari$otv_grup)]
-data$co2_vergisi <- yeni_otv_oranlari$co2_vergisi[match(data$mevcut_otv_grubu,yeni_otv_oranlari$otv_grup)]
+data$co2_vergisi <- data$co2*(yeni_otv_oranlari$co2_vergisi[match(data$mevcut_otv_grubu,yeni_otv_oranlari$otv_grup)])
+
 
 data <- data %>% mutate(yeni_toplam_otv= (net_fiyat*yeni_otv_orani+co2_vergisi),
+                        yeni_toplam_otv_orani = yeni_toplam_otv/net_fiyat,
                         yeni_fiyat = (net_fiyat+yeni_toplam_otv)*(1+kdv_orani),
-                        fark=yeni_fiyat-fiyat)
+                        fark=yeni_fiyat-mevcut_fiyat,
+                        yuzde_fiyat_degisimi=fark/mevcut_fiyat)
 
 
 
 #toplam otv gelirleri kiyaslamasi
 
-Yeni_toplam_OTV_geliri     <-  sum(data$yeni_toplam_otv*data$sales_2020)/1000000000
-Mevcut_muhtemel_OTV_geliri <- sum(data$mevcut_otv_tutari*data$sales_2020)/1000000000
+Yeni_toplam_OTV_geliri     <-  sum(data$yeni_toplam_otv*data$satis_2020,na.rm=T)/milyar
+Mevcut_muhtemel_OTV_geliri <-  sum(data$mevcut_otv_tutari*data$satis_2020)/milyar
 
 
-
-
-
-
-
-
-
+# grafikler
+yerli_ithal_dagilimi<-data%>% group_by(mevcut_otv_grubu,uretim) %>% summarise(t=sum(satis_2020)) %>% mutate(share =t/sum(t))
+yerli_ithal_dagilimi %>% ggplot() + 
+  geom_bar(aes(x=mevcut_otv_grubu,y=share,fill=uretim),stat = "identity",position = "stack")+
+  scale_fill_manual(values=palet)+
+  theme_Publication()+
+  labs(x="OTV gruplari",y="Toplam beklenen satis")+
+  theme(legend.title =element_blank(),
+        legend.position = "right",
+        legend.direction = "vertical",
+        legend.key.size= unit(0.5, "cm"))+
+  scale_x_continuous(breaks = seq(1,6))+
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1))
 
 
 
