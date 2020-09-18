@@ -1,5 +1,4 @@
-source("1_preparation.R")
-source("OTV oranlarinin hesaplanmasi.R")
+
 
 
 data <-  data%>% separate(segment,     into = c("segment_text", "segment_num"), 
@@ -9,34 +8,31 @@ data$segment_text <- tolower(data$segment_text)
 
 
 
-#matching segments with kleit segments
+# segments with kleit segments
 data$kleit_segment <- segment_look_up$kleit_segment[match(data$segment_text,segment_look_up$segment_text)]
 
-#suv segments are numbered as 7 in odd data
-#convertion ihs segments to kleit segment
+# suv segments are numbered as 7 in odd data
 data[data$segment_num==7 & data$agirlik>2000,]$kleit_segment <- 'large_suv'
 data[data$segment_num==7 & data$agirlik<2000,]$kleit_segment <- 'small_suv'
 
 
 # rakip esnekliklerinin hesaplanmasi ----
-
+j =ncol(data)+1
 for(i in 1:nrow(data)){
   segment_change <<- data[-i,]%>% filter(kleit_segment==data[i,]$kleit_segment)%>% 
     summarise(ortalama_rakip_degisimi=weighted.mean(yuzde_fiyat_degisimi,satis_2020,na.rm = T))  
-  data[i,60]<- segment_change
+  data[i,j] <- segment_change
   i=i+1
 }
 
 
-# segment cross esnekliklerinin hesaplanmasi ----
-
 data$yuzde_satis_degisimi<- (data$yuzde_fiyat_degisimi*kendi_esnekligi) + (data$ortalama_rakip_degisimi*rakip_esnekligi)
-data$yeni_satis<- round(data$satis_2020*(1+data$yuzde_fiyat_degisimi))
+data$yeni_satis<- round(data$satis_2020*(1+data$yuzde_satis_degisimi))
 
 segment_fiyat_degisimi <-  data%>% group_by(kleit_segment)%>% 
-                                  summarise(mevcut_toplam=sum(satis_2020),yuzde_fiyat_degisimi=weighted.mean(yuzde_fiyat_degisimi,satis_2020))
+  summarise(mevcut_toplam=sum(satis_2020),yuzde_fiyat_degisimi=weighted.mean(yuzde_fiyat_degisimi,satis_2020))
 
-
+# segment cross esnekliklerinin hesaplanmasi ----
 # kleit segment esnekliklerinin dahil edilmesi
 segment_capraz_esneklik<- gather(segment_capraz_esneklik,key='cross_segment', 'elasticity',small_car:van) %>%arrange(own_segment)
 
@@ -79,7 +75,21 @@ data$segment_ayarlamalari <- segment_capraz_esneklik$segment_ayarlamasi[match(da
 data$yeni_satis_segment_adjusted <- round(data$yeni_satis*data$segment_ayarlamalari)
 
 
-data%>% group_by(fuel_type) %>% summarise(weighted.mean(yuzde_fiyat_degisimi,satis_2020,na.rm=T),weighted.mean(yuzde_fiyat_degisimi,yeni_satis_segment_adjusted,na.rm=T))
+# Toplam yeni satis arasindaki fark ----
+data$adet_degisimi <- data$yeni_satis_segment_adjusted-data$satis_2020
+Yeni_toplam_OTV_geliri <- sum(data$yeni_toplam_otv*data$yeni_satis_segment_adjusted)/milyar
+
+#ekstra yakit tuketimi ----
+ekstra_yakit_tuketimi <- data %>% group_by(powertrain) %>% summarise(degisim=sum(adet_degisimi), 
+                                                                     ortalama_yakit_tuketimi= weighted.mean(yakit_tuketimi,adet_degisimi,na.rm=T)) 
+
+
+ekstra_yakit_tuketimi$gercek_tuketim <- 1.21*ekstra_yakit_tuketimi$ortalama_yakit_tuketimi
+
+ekstra_yakit_tuketimi$toplam_yakit_tuketimi <- (arac_omru_km/100)*ekstra_yakit_tuketimi$gercek_tuketim
+ekstra_yakit_tuketimi$yakit_otv<- ifelse(ekstra_yakit_tuketimi$powertrain=="Dizel",dizel_litre_otv,benzin_litre_otv)
+Toplam_ekstra_yakit_geliri= sum(ekstra_yakit_tuketimi$toplam_yakit_tuketimi*ekstra_yakit_tuketimi$yakit_otv*ekstra_yakit_tuketimi$degisim)/milyar  
+
 
 
 #hurda paketi 

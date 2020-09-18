@@ -1,5 +1,4 @@
-source("1_preparation.R")
-source("OTV oranlarinin hesaplanmasi.R")
+
 
 
 data <-  data %>% mutate(mtv_grubu=case_when(
@@ -46,7 +45,7 @@ Mevcut_muhtemel_MTV_geliri <- sum(data$satis_2020*data$lifetime_mtv)/milyar
 
 gereken_co2_mtv = (Mevcut_muhtemel_MTV_geliri+
                      (Mevcut_muhtemel_OTV_geliri-Yeni_toplam_OTV_geliri))*milyar/
-                  (arac_omru*sum(data$satis_2020)*weighted.mean(data$co2,data$toplam,na.rm=T))
+  (arac_omru*sum(data$satis_2020)*weighted.mean(data$co2,data$toplam,na.rm=T))
 
 
 # sadece CO2 emisyonuna dayali vergi sistemi ----
@@ -66,4 +65,5 @@ data$yeni_mtv_by_otv <- data$co2*data$yeni_mtv_co2_by_otv
 data$yeni_lifetime_mtv_otv_grubu_co2 <- data$yeni_mtv_by_otv*arac_omru
 
 Yeni_muhtemel_MTV_geliri_otv_grubu_co2 <- sum(data$yeni_lifetime_mtv_otv_grubu_co2*data$satis_2020,na.rm = T)/milyar
+
 

@@ -1,5 +1,4 @@
 
-#source("1_preparation.R")
 
 #verinin sadelestirilmesi ve yillik forecast rakamlarinin uygulanmasi
 
@@ -111,7 +110,6 @@ data <- data %>% mutate(yeni_toplam_otv= (net_fiyat*yeni_otv_orani+co2_vergisi),
 
 #toplam otv gelirleri kiyaslamasi
 
-Yeni_toplam_OTV_geliri     <-  sum(data$yeni_toplam_otv*data$satis_2020,na.rm=T)/milyar
 Mevcut_muhtemel_OTV_geliri <-  sum(data$mevcut_otv_tutari*data$satis_2020)/milyar
 
 
