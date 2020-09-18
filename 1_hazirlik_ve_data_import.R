@@ -1,6 +1,11 @@
 # Packages ------------------------------------------------------------------------------------
-lapply(c("rio", "stringr","ggthemes","tidyverse","tidyr",'forecast','scales','tools'), library, character.only = TRUE) # load packages
+# butun paketlerin yuklu oldunudan emin olmak icin check
+list_of_packages <- c("rio", "stringr","ggthemes","tidyverse","tidyr",'forecast','scales','tools') 
+new.packages <- list_of_packages[!(list_of_packages%in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
 
+# importing the packages
+lapply(list_of_packages,library,character.only=T)
 
 # data import ----
 odd_2016 <- import("r_input/odd_kpmg_2016.xls",sheet="Sheet1",skip=2)  %>% mutate(year=2016)
@@ -42,6 +47,13 @@ arac_omru_km     <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[3
 #hurda tesviki
 hurda_tesviki_paketi <- import("r_input/hurda_tesviki.xlsx") [1,2]
 hurda_tesviki_indirim_orani <- import("r_input/hurda_tesviki.xlsx") [2,2]
+
+
+# kredi indirimi
+kredi_orani <- import("r_input/kredi_indirimi.xlsx") [1,2]
+ortalama_vade <- import("r_input/kredi_indirimi.xlsx") [3,2]
+mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [4,2]
+indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [5,2]
 
 
 # Agustosa kadar yillik satislar
