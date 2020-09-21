@@ -29,7 +29,8 @@ mtv_oranlari <- import("r_input/mtv_oranlari.xlsx",sheet="2020_mtv")
 arac_omru <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[1,2]
 mtv_per_co2 <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[2,2]
 otv_grubuna_dayali_mtv <- import("r_input/mtv_oranlari.xlsx",sheet="OTV_grubuna_dayali_MTV")
-
+co2_gruplari <- import("r_input/mtv_oranlari.xlsx",sheet="co2_araliklari")
+otv_grubu_co2_araliklari <- import("r_input/mtv_oranlari.xlsx",sheet="otv_grubu_co2_araliklari")
 
 # segment karsilastirmalari
 segment_look_up<- import('r_input/esneklik.xlsx',sheet="segments")

@@ -52,7 +52,7 @@ gereken_co2_mtv = (Mevcut_muhtemel_MTV_geliri+
 
 data$yeni_mtv_sadece_co2 <- data$co2*mtv_per_co2
 
-data$yeni_lifetime_mtv_sadece_co2 <- data$yeni_mtv*arac_omru
+data$yeni_lifetime_mtv_sadece_co2 <- data$yeni_mtv_sadece_co2*arac_omru
 
 Yeni_muhtemel_MTV_geliri_sadece_co2 <- sum(data$satis_2020*data$yeni_lifetime_mtv,na.rm=T)/milyar
 
@@ -65,5 +65,39 @@ data$yeni_mtv_by_otv <- data$co2*data$yeni_mtv_co2_by_otv
 data$yeni_lifetime_mtv_otv_grubu_co2 <- data$yeni_mtv_by_otv*arac_omru
 
 Yeni_muhtemel_MTV_geliri_otv_grubu_co2 <- sum(data$yeni_lifetime_mtv_otv_grubu_co2*data$satis_2020,na.rm = T)/milyar
+
+
+
+
+# Opsiyon3: CO2 araliklarina gore vergilendirme ----
+
+data <- data %>% mutate(co2_grubu= case_when(
+   between(co2,co2_gruplari[1,1],co2_gruplari[1,2]) ~ co2_gruplari[1,3],
+   between(co2,co2_gruplari[2,1],co2_gruplari[2,2]) ~ co2_gruplari[2,3],
+   between(co2,co2_gruplari[3,1],co2_gruplari[3,2]) ~ co2_gruplari[3,3],
+   between(co2,co2_gruplari[4,1],co2_gruplari[4,2]) ~ co2_gruplari[4,3],
+   between(co2,co2_gruplari[5,1],co2_gruplari[5,2]) ~ co2_gruplari[5,3]
+  ))
+
+
+
+otv_grubu_co2_araliklari <- otv_grubu_co2_araliklari %>% 
+  gather(key = "co2_grubu", value ="mtv_miktari", co2_grubu_1:co2_grubu_5) %>% 
+  select(mevcut_otv_grubu,co2_grubu, yeni_mtv_co2_araliklari = mtv_miktari
+)
+
+
+data <- data %>% right_join(otv_grubu_co2_araliklari, by=c("mevcut_otv_grubu","co2_grubu"))
+
+data$yeni_lifetime_mtv_co2_araliklari <- data$yeni_mtv_co2_araliklari*arac_omru
+
+Yeni_muhtemel_MTV_geliri_co2_araliklari <- sum(data$yeni_lifetime_mtv_co2_araliklari*data$satis_2020,na.rm = T)/milyar
+
+
+
+
+
+
+
 
 

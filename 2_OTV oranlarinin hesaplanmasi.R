@@ -114,7 +114,7 @@ Mevcut_muhtemel_OTV_geliri <-  sum(data$mevcut_otv_tutari*data$satis_2020)/milya
 
 
 # grafikler
-yerli_ithal_dagilimi<-data%>% group_by(mevcut_otv_grubu,uretim) %>% summarise(t=sum(satis_2020)) %>% mutate(share =t/sum(t))
+yerli_ithal_dagilimi<- data%>% group_by(mevcut_otv_grubu,uretim) %>% summarise(t=sum(satis_2020)) %>% mutate(share =t/sum(t))
 yerli_ithal_dagilimi %>% ggplot() + 
   geom_bar(aes(x=mevcut_otv_grubu,y=share,fill=uretim),stat = "identity",position = "stack")+
   scale_fill_manual(values=palet)+
@@ -125,26 +125,7 @@ yerli_ithal_dagilimi %>% ggplot() +
         legend.direction = "vertical",
         legend.key.size= unit(0.5, "cm"))+
   scale_x_continuous(breaks = seq(1,6))+
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1),expand = c(0,0))
 
 
 

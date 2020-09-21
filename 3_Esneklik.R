@@ -91,6 +91,3 @@ ekstra_yakit_tuketimi$yakit_otv<- ifelse(ekstra_yakit_tuketimi$powertrain=="Dize
 Toplam_ekstra_yakit_geliri= sum(ekstra_yakit_tuketimi$toplam_yakit_tuketimi*ekstra_yakit_tuketimi$yakit_otv*ekstra_yakit_tuketimi$degisim)/milyar  
 
 
-
-#hurda paketi 
-#faiz indirimi
