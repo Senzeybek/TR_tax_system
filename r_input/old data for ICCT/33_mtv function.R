@@ -1,6 +1,6 @@
 #data#####
 #clearing passenger car data
-vehicle_on_the_road <- import("r_input/mtv_data.xlsx")
+vehicle_on_the_road <- import("r_input/mtv_data_tuik.xlsx")
 mtv_amount<- import("r_input/2018_mtv.xlsx") 
 mtv_amount<-mtv_amount%>% gather(key ='age group','mtv amount', `1-3 age`:`16 or older`)
 vehicle_on_the_road <- vehicle_on_the_road %>% mutate_all(tolower)
