@@ -1,6 +1,6 @@
 # Packages ------------------------------------------------------------------------------------
 # butun paketlerin yuklu oldunudan emin olmak icin check
-list_of_packages <- c("rio", "stringr","ggthemes","tidyverse","tidyr",'forecast','scales','tools') 
+list_of_packages <- c("rio", "stringr","ggthemes","tidyverse","tidyr",'forecast','scales','tools',"ggrepel") 
 new.packages <- list_of_packages[!(list_of_packages%in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -84,15 +84,16 @@ lighten <- function(color, factor=1.4){
 
 koyu_mavi = "#28364A"
 acik_mavi = "#B2D3E1"
-kirmizi = "#D65353"
+kirmizi = "#370617"
 sari = "#F7C45F"  
+yesil = "#1a535c"
 
 mavi= "#7293CB"	
 gri = "#E1974C"
 
 
-palet <- c("#555b6e","#89b0ae","#bee3db","#faf9f9","#ffd6ba")
-
+palet <- c("#555b6e","#89b0ae","#faf9f9","#ffd6ba","#bee3db")
+palet1 <- c(koyu_mavi,kirmizi,yesil)
 milyar<-1000000000
 
 

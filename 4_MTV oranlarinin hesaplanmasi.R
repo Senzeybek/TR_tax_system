@@ -37,7 +37,7 @@ data <-  data %>% mutate(mtv_grubu=case_when(
 
 # 2020de satilan araclarin omur boyunca toplam odeyecekleri MTVnin hesaplanmasi ----
 
-mtv_oranlari$lifetime_mtv <-rowSums(mtv_oranlari %>% select(yil_1:(yil_1+arac_omru-1)))
+mtv_oranlari$lifetime_mtv <-rowSums(mtv_oranlari %>% select(sene_1:(sene_1+arac_omru-1)))
 
 data$lifetime_mtv <- mtv_oranlari$lifetime_mtv[match(data$mtv_grubu,mtv_oranlari$mtv_grubu)]
 
