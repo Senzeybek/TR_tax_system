@@ -36,6 +36,7 @@ otv_grubu_co2_araliklari <- import("r_input/mtv_oranlari.xlsx",sheet="otv_grubu_
 segment_look_up<- import('r_input/esneklik.xlsx',sheet="segments")
 kendi_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[1,2]
 rakip_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[2,2]
+tco_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[3,2]
 segment_capraz_esneklik <- import('r_input/esneklik.xlsx',sheet="kleit_segment_elasticity")
 
 
@@ -49,13 +50,12 @@ arac_omru_km     <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[3
 hurda_tesviki_paketi <- import("r_input/hurda_tesviki.xlsx") [1,2]
 hurda_tesviki_indirim_orani <- import("r_input/hurda_tesviki.xlsx") [2,2]
 
-
 # kredi indirimi
 kredi_orani <- import("r_input/kredi_indirimi.xlsx") [1,2]
-ortalama_vade <- import("r_input/kredi_indirimi.xlsx") [3,2]
-mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [4,2]
-indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [5,2]
-
+ortalama_vade <- import("r_input/kredi_indirimi.xlsx") [2,2]
+mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [3,2]
+indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [4,2]
+max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx") [5,2]
 
 # Agustosa kadar yillik satislar
 odd_agustos_2019<-  odd_2019 %>% select(-eylul:-aralik)

@@ -1,19 +1,28 @@
-# toplam kredi hacmi
+# kredi sistemi
 
-toplam_sektor_hacmi <- sum(data$yeni_fiyat*data$yeni_satis_segment_adjusted)/milyar
+data$kullanilan_kredi <- data$yeni_fiyat*kredi_orani
 
-kredi_hacmi <- toplam_sektor_hacmi*kredi_orani
+data <- data %>% mutate(avaliable_indirimli_kredi=case_when(
+  uretim=="yerli" & kullanilan_kredi<  max_indirimli_kredi_miktari ~ kullanilan_kredi              ,
+  uretim=="yerli" & kullanilan_kredi>= max_indirimli_kredi_miktari ~ max_indirimli_kredi_miktari,
+  uretim=="ithal" ~ 0,
+))
 
-arac_basina_kredi <- kredi_hacmi*milyar/sum(data$yeni_satis_segment_adjusted)
 
-arac_basina_kredi_odemesi <- arac_basina_kredi* ((1+mevcut_yillik_faiz)^ortalama_vade) 
+data$mevcut_toplam_kredi_odemesi <- data$kullanilan_kredi* ((1+mevcut_yillik_faiz)^ortalama_vade) 
 
-yillik_faiz_odemesi <- (arac_basina_kredi_odemesi - arac_basina_kredi)/ortalama_vade
+data$mevcut_toplam_faiz_odemesi <- data$mevcut_toplam_kredi_odemesi - data$kullanilan_kredi
 
-indirimli_kredi_odemesi <- arac_basina_kredi * ((1+indirimli_yillik_faiz)^ortalama_vade) 
+data$mevcut_yillik_faiz_odemesi <- data$mevcut_toplam_faiz_odemesi/ortalama_vade
 
-indirimli_yillik_faiz_odemesi <- (indirimli_kredi_odemesi - arac_basina_kredi)/ortalama_vade
+data$indirimli_kredi_odemesi <- data$avaliable_indirimli_kredi * ((1+indirimli_yillik_faiz)^ortalama_vade) +
+  (data$kullanilan_kredi - data$avaliable_indirimli_kredi) *((1+mevcut_yillik_faiz)^ortalama_vade) # bu kisim toplam kullanacagi kredi indirimli kisimdan buyuk olanlar icin
 
-ortalama_yillik_faiz_indirimi <- yillik_faiz_odemesi - indirimli_yillik_faiz_odemesi
 
-faiz_indirim_orani <- ortalama_yillik_faiz_indirimi/weighted.mean(data$net_fiyat,data$yeni_satis_segment_adjusted)
+data$indirimli_faiz_odemesi <- data$indirimli_kredi_odemesi-data$kullanilan_kredi
+
+data$indirimli_yillik_faiz_odemesi <- data$indirimli_faiz_odemesi/ortalama_vade
+
+data$yillik_faiz_farki <- data$mevcut_yillik_faiz_odemesi-data$indirimli_yillik_faiz_odemesi
+
+

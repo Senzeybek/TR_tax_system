@@ -34,14 +34,14 @@ export(OTV_kiyaslamasi,OTV_result_path)
 
 # OTV summary tables
 toplam_satis <- sum(data$satis_2020,na.rm=T)
-toplam_satis_yeni <- sum(data$yeni_satis_segment_adjusted,na.rm=T)
+toplam_satis_yeni <- sum(data$yeni_satis,na.rm=T)
 
 
 otv_grup_summary <-  data %>% filter(powertrain!="Hybrid") %>%
   group_by(mevcut_otv_grubu) %>%
   summarise(mevcut_satis        = sum(satis_2020,na.rm = T),
-            yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis_segment_adjusted,na.rm=T),
-            yeni_satis          = sum(yeni_satis_segment_adjusted)) %>%
+            yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
+            yeni_satis          = sum(yeni_satis)) %>%
   mutate(eski_market_payi       = mevcut_satis/toplam_satis,
          yeni_market_payi       = yeni_satis/toplam_satis_yeni,
          eski_toplam_talep      = toplam_satis,
@@ -55,9 +55,9 @@ export(otv_grup_summary,otv_grup_summary_path)
 
 # figure 
 proposal_result <- data%>%group_by(marka,model,powertrain,mevcut_otv_orani)%>% 
-  summarise(new_otv_rate=weighted.mean(yeni_toplam_otv_orani,yeni_satis_segment_adjusted,na.rm=T),
+  summarise(new_otv_rate=weighted.mean(yeni_toplam_otv_orani,yeni_satis,na.rm=T),
             co2_emission=weighted.mean(co2,yeni_satis,na.rm=T),
-            price=weighted.mean(fiyat,yeni_satis_segment_adjusted,na.rm=T), sales=sum(yeni_satis_segment_adjusted,na.rm=T),
+            price=weighted.mean(fiyat,yeni_satis,na.rm=T), sales=sum(yeni_satis,na.rm=T),
   ) %>%
   filter(sales>5000| (powertrain=='Hybrid'&sales>1000))
   #filter(model!='renault clio' | otv_rate!=0.5)
@@ -73,7 +73,7 @@ ggplot(proposal_result)+
   theme_classic()+
   scale_color_manual(values = palet1)+
   scale_fill_manual(values =palet1)+
-  labs(x=expression(bold('Ortalama ' *CO[2]* ' emisyonu (g/km)')),y='ÖTV yüzdesi')+
+  labs(x=expression(bold('Ortalama ' *CO[2]* ' emisyonu (g/km)')),y='OTV yuzdesi')+
   theme( legend.text = element_text(size = 10),
          legend.title = element_blank(),
          legend.position = "right",
@@ -104,7 +104,7 @@ ggplot(proposal_result)+
   theme_classic()+
   scale_color_manual(values = palet1)+
   scale_fill_manual(values =palet1)+
-  labs(x=expression(bold('Aracin fiyati')),y='ÖTV yüzdesi')+
+  labs(x=expression(bold('Aracin fiyati')),y='OTV yuzdesi')+
   theme( legend.text = element_text(size = 10),
          legend.title = element_blank(),
          legend.position = "right",

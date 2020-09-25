@@ -37,7 +37,7 @@ data <-  data %>% mutate(mtv_grubu=case_when(
 
 # 2020de satilan araclarin omur boyunca toplam odeyecekleri MTVnin hesaplanmasi ----
 
-mtv_oranlari$lifetime_mtv <-rowSums(mtv_oranlari %>% select(sene_1:(sene_1+arac_omru-1)))
+mtv_oranlari$lifetime_mtv <-rowSums(mtv_oranlari %>% select(6:(6+arac_omru-1)))
 
 data$lifetime_mtv <- mtv_oranlari$lifetime_mtv[match(data$mtv_grubu,mtv_oranlari$mtv_grubu)]
 
@@ -94,7 +94,7 @@ data$yeni_lifetime_mtv_co2_araliklari <- data$yeni_mtv_co2_araliklari*arac_omru
 Yeni_muhtemel_MTV_geliri_co2_araliklari <- sum(data$yeni_lifetime_mtv_co2_araliklari*data$satis_2020,na.rm = T)/milyar
 
 
-
+data <- data %>% filter(!is.na(model))
 
 
 
