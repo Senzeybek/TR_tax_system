@@ -7,5 +7,5 @@ data <- data %>% mutate(
 
 data$tco_degisim_orani <- (data$yeni_tco_with_hurda_kredi-data$mevcut_tco)/data$mevcut_tco
 
-data$tco_yeni_talep <- round((1+(data$tco_degisim_orani*tco_esnekligi))*data$satis_2020)
+data$tco_yeni_talep <- round((1+(data$tco_degisim_orani*tco_esnekligi))*data$sales)
 

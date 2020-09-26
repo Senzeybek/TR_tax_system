@@ -1,8 +1,12 @@
 # Hurda tesviki
 
 # tesvik verilecek gruolar ve tesvik indirimi
-data$hurda_tesvikli_otv_orani <- ifelse(data$mevcut_otv_grubu%in% c(1,2),
-                                        data$yeni_toplam_otv_orani-hurda_tesviki_indirim_orani,data$yeni_toplam_otv_orani) 
+data <- data %>% mutate(hurda_tesvikli_otv_orani= case_when(
+  mevcut_otv_grubu==1 ~ yeni_toplam_otv_orani-yeni_arac_indirim_orani_grup1,
+  mevcut_otv_grubu==2 ~ yeni_toplam_otv_orani-yeni_arac_indirim_orani_grup2,
+  TRUE ~ yeni_toplam_otv_orani
+  ))
+
 
 
 # yeni arac fiyati hesaplanmasi
@@ -26,18 +30,6 @@ data$hurda_tesviki_ekstra_satis <- data$hurda_tesvikli_satis_miktari - data$yeni
 
 # Hurda tesviki sonrasinda vergi gelirleri
 # Gelecek ekstra 86000 yeni arac talebi sayesinde OTVdeki kayip 2.5 milyar seviyesinde kaliyor.
-
-Hurda_tesvikli_otv_geliri <- sum(data$hurda_tesvikli_satis_miktari*data$hurda_tesvikli_OTV_tutari )/milyar 
-
-Hurda_tesvikli_kdv_geliri <- sum(data$hurda_tesvikli_satis_miktari*data$hurda_tesvikli_KDV_tutari )/milyar 
-
-Hurda_tesvikli_mtv_geliri_co2_araliklari <- sum(data$hurda_tesvikli_satis_miktari*data$yeni_lifetime_mtv_co2_araliklari )/milyar 
-
-Hurda_tesvikli_mtv_geliri_otv_grubu_co2<- sum(data$hurda_tesvikli_satis_miktari*data$yeni_lifetime_mtv_otv_grubu_co2 )/milyar 
-
-Hurda_tesvikli_mtv_geliri_sadece_co2<- sum(data$hurda_tesvikli_satis_miktari*data$yeni_lifetime_mtv_sadece_co2 )/milyar 
-
-
 
 
 

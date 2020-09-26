@@ -9,14 +9,16 @@ data$segment_text <- tolower(data$segment_text)
 
 
 data$yuzde_satis_degisimi<- (data$yuzde_fiyat_degisimi*kendi_esnekligi)
-data$yeni_satis<- round(data$satis_2020*(1+data$yuzde_satis_degisimi))
+data$yeni_satis<- round(data$sales*(1+data$yuzde_satis_degisimi))
 
 
 
 # Toplam yeni satis arasindaki fark ----
-data$adet_degisimi <- data$yeni_satis-data$satis_2020
-Yeni_toplam_OTV_geliri <- sum(data$eski_otv_miktari*data$toplam)/milyar + #agustos ayina kadar olan satislar
-  sum(data$mevcut_otv_tutari * (data$satis_2020-data$toplam))/milyar
+data$adet_degisimi <- data$yeni_satis-data$sales
+
+
+#Yeni_toplam_OTV_geliri <- sum(data$eski_otv_miktari*data$toplam)/milyar + #agustos ayina kadar olan satislar
+#  sum(data$mevcut_otv_tutari * (data$satis_2020-data$toplam))/milyar
 
 #ekstra yakit tuketimi ----
 ekstra_yakit_tuketimi <- data %>% group_by(powertrain) %>% summarise(degisim=sum(adet_degisimi), 

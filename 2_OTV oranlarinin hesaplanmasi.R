@@ -6,19 +6,20 @@ data <- odd_2020 %>% filter(!is.na(fiyat),!is.na(engine_displacement)) %>%
          -piyasadan_cikis,-piyasaya_giris,-ocak:-agustos,-turbo_motor,-start_stop,
          -ulke,-model_year,-silindir,-`electric_max_power (Kw)`,-`electric_max:_tork (Nm)`,
          -menzil_toplam,-baterry_capacity,-sarj,-max_guc,-max_guc_devri,-max_guc_devri2,-guc,
-         -hybrid_toplam_guc,-emisyon_standarti,-sanziman,-garanti_km,-agirlik,-elektric_guc_tuketimi_100km,
-         -donanim,-alt_model)
+         -hybrid_toplam_guc,-emisyon_standarti,-sanziman,-garanti_km,-elektric_guc_tuketimi_100km,
+         -donanim,-alt_model,-year)
 
 
-data$satis_2020 <- round(data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
-data$satis_2021 <- round(data$toplam*(sales_forecast$`2021`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
-data$satis_2022 <- round(data$toplam*(sales_forecast$`2022`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
-data$satis_2023 <- round(data$toplam*(sales_forecast$`2023`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
-data$satis_2024 <- round(data$toplam*(sales_forecast$`2024`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
-data$satis_2025 <- round(data$toplam*(sales_forecast$`2025`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$"2020" <- round(data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$"2021" <- round(data$toplam*(sales_forecast$`2021`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$"2022" <- round(data$toplam*(sales_forecast$`2022`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$"2023" <- round(data$toplam*(sales_forecast$`2023`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$"2024" <- round(data$toplam*(sales_forecast$`2024`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
+data$"2025" <- round(data$toplam*(sales_forecast$`2025`[sales_forecast$arac_tipi=="binek_arac"]/sum(data$toplam)))
 
 
-
+data <- data %>% gather(key=year,value = sales, "2020":"2025")
+data$year <- as.numeric(data$year)
 
 
 #eski OTV oranlari ----
@@ -94,7 +95,6 @@ data <- data %>% mutate(mevcut_otv_tutari = net_fiyat*mevcut_otv_orani,
                         mevcut_kdv_tutari = (net_fiyat+mevcut_otv_tutari)*kdv_orani,
                         mevcut_fiyat =net_fiyat+mevcut_otv_tutari+mevcut_kdv_tutari)
 
-sum(data$mevcut_otv_tutari*data$satis_2020)/milyar
 
 
 # yeni OTV orani ----
@@ -114,28 +114,12 @@ data <- data %>% mutate(yeni_toplam_otv_tutari= (net_fiyat*yeni_otv_orani+co2_ve
 
 #toplam vergi gelirleri ----
 
-Mevcut_muhtemel_OTV_geliri <-  sum(data$eski_otv_miktari*data$toplam)/milyar + #agustos ayina kadar olan satislar
-            sum(data$mevcut_otv_tutari * (data$satis_2020-data$toplam))/milyar
-
-Mevcut_muhtemel_KDV_geliri <-  sum(data$eski_kdv_miktari*data$toplam)/milyar + #agustos ayina kadar olan satislar
-  sum(data$mevcut_kdv_tutari * (data$satis_2020-data$toplam))/milyar
-
-# grafikler ----
-yerli_ithal_dagilimi<- data%>% group_by(mevcut_otv_grubu,uretim) %>% summarise(t=sum(satis_2020)) %>% mutate(share =t/sum(t))
-yerli_ithal_dagilimi %>% ggplot() + 
-  geom_bar(aes(x=mevcut_otv_grubu,y=share,fill=uretim),stat = "identity",position = "stack")+
-  scale_fill_manual(values=palet)+
-  theme_Publication()+
-  labs(x="OTV gruplari",y="Toplam beklenen satis")+
-  theme(legend.title =element_blank(),
-        legend.position = "right",
-        legend.direction = "vertical",
-        legend.key.size= unit(0.5, "cm"))+
-  scale_x_continuous(breaks = seq(1,6))+
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1),expand = c(0,0))
+Mevcut_muhtemel_vergi_gelirleri <- data %>% group_by(year) %>% summarise(Mevcut_muhtemel_OTV_geliri=sum(mevcut_otv_tutari * (sales))/milyar,
+                                                                        Mevcut_muhtemel_KDV_geliri=sum(mevcut_kdv_tutari * (sales))/milyar)
 
 
-#data %>% gather(key=years,value = satis, satis_2020:satis_2025)
+
+
 
 
 

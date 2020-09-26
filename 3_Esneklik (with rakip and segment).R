@@ -20,17 +20,17 @@ data[data$segment_num==7 & data$agirlik<2000,]$kleit_segment <- 'small_suv'
 j =ncol(data)+1
 for(i in 1:nrow(data)){
   segment_change <<- data[-i,]%>% filter(kleit_segment==data[i,]$kleit_segment)%>% 
-    summarise(ortalama_rakip_degisimi=weighted.mean(yuzde_fiyat_degisimi,satis_2020,na.rm = T))  
+    summarise(ortalama_rakip_degisimi=weighted.mean(yuzde_fiyat_degisimi,sales,na.rm = T))  
   data[i,j] <- segment_change
   i=i+1
 }
 
 
 data$yuzde_satis_degisimi<- (data$yuzde_fiyat_degisimi*kendi_esnekligi) + (data$ortalama_rakip_degisimi*rakip_esnekligi)
-data$yeni_satis<- round(data$satis_2020*(1+data$yuzde_satis_degisimi))
+data$yeni_satis<- round(data$sales*(1+data$yuzde_satis_degisimi))
 
 segment_fiyat_degisimi <-  data%>% group_by(kleit_segment)%>% 
-  summarise(mevcut_toplam=sum(satis_2020),yuzde_fiyat_degisimi=weighted.mean(yuzde_fiyat_degisimi,satis_2020))
+  summarise(mevcut_toplam=sum(sales),yuzde_fiyat_degisimi=weighted.mean(yuzde_fiyat_degisimi,sales))
 
 # segment cross esnekliklerinin hesaplanmasi ----
 # kleit segment esnekliklerinin dahil edilmesi
@@ -63,7 +63,7 @@ segment_capraz_esneklik$yeni_market_payi_by_kleit<- segment_capraz_esneklik$yeni
 # Daha sonra mevcut segment sharelari ile kleit sharelari karsilastirildi
 # O nedenle Kleit segment paylarini mevcut paylara bolup oran bulundu
 
-mevcut_yeni_satislar<- data %>% group_by(kleit_segment)%>% summarise(mevcut_satislar=sum(satis_2020,na.rm=T)) %>% 
+mevcut_yeni_satislar<- data %>% group_by(kleit_segment)%>% summarise(mevcut_satislar=sum(sales,na.rm=T)) %>% 
   mutate(mevcut_market_payi=mevcut_satislar/sum(mevcut_satislar,na.rm=T))
 
 segment_capraz_esneklik$mevcut_satislar<- mevcut_yeni_satislar$mevcut_satislar[match(segment_capraz_esneklik$own_segment, mevcut_yeni_satislar$kleit_segment)]
@@ -76,8 +76,8 @@ data$yeni_satis <- round(data$yeni_satis*data$segment_ayarlamalari)
 
 
 # Toplam yeni satis arasindaki fark ----
-data$adet_degisimi <- data$yeni_satis-data$satis_2020
-Yeni_toplam_OTV_geliri <- sum(data$yeni_toplam_otv*data$yeni_satis)/milyar
+data$adet_degisimi <- data$yeni_satis-data$sales
+Yeni_toplam_OTV_geliri <-data %>% group_by(year) %>% summarise(sum(yeni_toplam_otv_tutari*yeni_satis)/milyar)
 
 #ekstra yakit tuketimi ----
 ekstra_yakit_tuketimi <- data %>% group_by(powertrain) %>% summarise(degisim=sum(adet_degisimi), 

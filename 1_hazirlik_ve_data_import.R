@@ -7,6 +7,9 @@ if(length(new.packages)) install.packages(new.packages)
 # importing the packages
 lapply(list_of_packages,library,character.only=T)
 
+
+
+
 # data import ----
 odd_2016 <- import("r_input/odd_kpmg_2016.xls",sheet="Sheet1",skip=2)  %>% mutate(year=2016)
 odd_2017 <- import("r_input/odd_kpmg_2017.xls",sheet="Sheet1",skip=2) %>% mutate(year=2017) 
@@ -17,6 +20,9 @@ odd_2020 <- import("r_input/odd_kpmg_2020.xls",sheet="Sheet1",skip=2) %>%
          yakit_tuketimi=as.numeric(yakit_tuketimi))
 
 
+
+
+
 #otv oranlari
 eski_otv_oranlari <- import("r_input/otv_structure.xlsx",sheet="ice_eski")
 mevcut_otv_oranlari <- import("r_input/otv_structure.xlsx",sheet="ice_mevcut")
@@ -24,7 +30,10 @@ yeni_otv_oranlari<- import("r_input/otv_structure.xlsx",sheet="yeni_otv")
 sales_forecast<-  import("r_input/sales_forecast.xls")
 
 
-#mtv oranlari
+
+
+
+#mtv oranlari ----
 mtv_oranlari <- import("r_input/mtv_oranlari.xlsx",sheet="2020_mtv")
 arac_omru <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[1,2]
 mtv_per_co2 <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[2,2]
@@ -32,32 +41,50 @@ otv_grubuna_dayali_mtv <- import("r_input/mtv_oranlari.xlsx",sheet="OTV_grubuna_
 co2_gruplari <- import("r_input/mtv_oranlari.xlsx",sheet="co2_araliklari")
 otv_grubu_co2_araliklari <- import("r_input/mtv_oranlari.xlsx",sheet="otv_grubu_co2_araliklari")
 
-# segment karsilastirmalari
+
+
+
+
+# segment ve esneklik----
 segment_look_up<- import('r_input/esneklik.xlsx',sheet="segments")
-kendi_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[1,2]
-rakip_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[2,2]
-tco_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik")[3,2]
+kendi_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik (binek)")[1,2]
+rakip_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik (binek)")[2,2]
+tco_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik (binek)")[3,2]
 segment_capraz_esneklik <- import('r_input/esneklik.xlsx',sheet="kleit_segment_elasticity")
+lcv_esneklik <- import('r_input/esneklik.xlsx',sheet="LCV esneklik")[1,2]
 
 
-# yakit tuketimi
+
+# yakit tuketimi----
 benzin_litre_otv <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[1,2]
 dizel_litre_otv  <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[2,2]
 arac_omru_km     <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[3,2]
 
 
-#hurda tesviki
-hurda_tesviki_paketi <- import("r_input/hurda_tesviki.xlsx") [1,2]
-hurda_tesviki_indirim_orani <- import("r_input/hurda_tesviki.xlsx") [2,2]
 
-# kredi indirimi
-kredi_orani <- import("r_input/kredi_indirimi.xlsx") [1,2]
-ortalama_vade <- import("r_input/kredi_indirimi.xlsx") [2,2]
-mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [3,2]
-indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx") [4,2]
-max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx") [5,2]
 
-# Agustosa kadar yillik satislar
+
+#hurda tesviki----
+yeni_arac_indirim_orani_grup1 <- import("r_input/hurda_tesviki.xlsx",sheet="binek_arac") [1,2]
+yeni_arac_indirim_orani_grup2 <- import("r_input/hurda_tesviki.xlsx",sheet="binek_arac") [2,2]
+LCV_hurda_tesvik_orani <- import("r_input/hurda_tesviki.xlsx",sheet="LCV") [1,2]
+
+
+
+
+# kredi indirimi----
+kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [1,2]
+ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [2,2]
+mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [3,2]
+indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [4,2]
+max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [5,2]
+
+lcv_kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [1,2]
+lcv_ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [2,2]
+lcv_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [5,2]
+
+
+# Agustosa kadar yillik satislar----
 odd_agustos_2019<-  odd_2019 %>% select(-eylul:-aralik)
 odd_agustos_2018<-  odd_2018 %>% select(-eylul:-aralik)
 odd_agustos <- rbind(odd_2020,odd_agustos_2019)
@@ -65,6 +92,14 @@ odd_agustos <- rbind(odd_agustos,odd_agustos_2018)
 odd_agustos$toplam <- rowSums(odd_agustos[,39:46])
 
 
+
+# LCV segmenti----
+odd_lcv_2020 <- import("r_input/LCV_odd_kpmg_2020.xls",sheet="Sheet1",skip=2) %>% 
+  mutate(fiyat=as.numeric(fiyat),engine_displacement=as.numeric(engine_displacement),co2=as.numeric(co2),
+         yakit_tuketimi=as.numeric(yakit_tuketimi))
+
+
+lcv_eski_otv_oranlari <- import("r_input/LCV_HCV inputs.xlsx",sheet="LCV_OTV")
 
 
 # Grafik ve renkler ---- 
