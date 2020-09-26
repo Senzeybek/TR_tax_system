@@ -17,7 +17,7 @@ odd_2018 <- import("r_input/odd_kpmg_2018.xls",sheet="Sheet1",skip=2) %>% mutate
 odd_2019 <- import("r_input/odd_kpmg_2019.xls",sheet="Sheet1",skip=2) %>% mutate(year=2019)
 odd_2020 <- import("r_input/odd_kpmg_2020.xls",sheet="Sheet1",skip=2) %>% 
   mutate(year=2020,fiyat=as.numeric(fiyat),engine_displacement=as.numeric(engine_displacement),co2=as.numeric(co2),
-         yakit_tuketimi=as.numeric(yakit_tuketimi))
+         yakit_tuketimi=as.numeric(as.character(sub("," , ".", yakit_tuketimi))))
 
 
 
@@ -58,8 +58,9 @@ lcv_esneklik <- import('r_input/esneklik.xlsx',sheet="LCV esneklik")[1,2]
 # yakit tuketimi----
 benzin_litre_otv <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[1,2]
 dizel_litre_otv  <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[2,2]
-arac_omru_km     <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[3,2]
-
+arac_yillik_km     <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[3,2]
+benzin_litre_kdv <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[4,2]
+dizel_litre_kdv  <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[5,2]
 
 
 
@@ -78,6 +79,7 @@ ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [2,2]
 mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [3,2]
 indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [4,2]
 max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [5,2]
+kredi_esnekligi <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [6,2]
 
 lcv_kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [1,2]
 lcv_ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [2,2]

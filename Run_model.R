@@ -21,6 +21,8 @@ source("9_LCV_Hurda_tesviki.R")
 
 source("10_LCV_kredi_indirimi.R")
 
+source("Yakit Tuketimi.R")
+
 source("Export.R")
 
 

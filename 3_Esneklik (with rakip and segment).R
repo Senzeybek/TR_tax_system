@@ -86,7 +86,7 @@ ekstra_yakit_tuketimi <- data %>% group_by(powertrain) %>% summarise(degisim=sum
 
 ekstra_yakit_tuketimi$gercek_tuketim <- 1.21*ekstra_yakit_tuketimi$ortalama_yakit_tuketimi
 
-ekstra_yakit_tuketimi$toplam_yakit_tuketimi <- (arac_omru_km/100)*ekstra_yakit_tuketimi$gercek_tuketim
+ekstra_yakit_tuketimi$toplam_yakit_tuketimi <- (arac_yillik_km/100)*ekstra_yakit_tuketimi$gercek_tuketim
 ekstra_yakit_tuketimi$yakit_otv<- ifelse(ekstra_yakit_tuketimi$powertrain=="Dizel",dizel_litre_otv,benzin_litre_otv)
 Toplam_ekstra_yakit_geliri= sum(ekstra_yakit_tuketimi$toplam_yakit_tuketimi*ekstra_yakit_tuketimi$yakit_otv*ekstra_yakit_tuketimi$degisim)/milyar  
 
