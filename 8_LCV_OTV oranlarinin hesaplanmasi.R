@@ -2,7 +2,7 @@
 
 #verinin sadelestirilmesi ve yillik forecast rakamlarinin uygulanmasi ----
 
-lcv_data <- odd_lcv_2020 %>% filter(!is.na(fiyat),!is.na(engine_displacement)) 
+lcv_data <- odd_lcv_2020 %>% filter(!is.na(fiyat),!is.na(engine_displacement))  
 
 lcv_data$"2020" <- round(lcv_data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="LCV"]/sum(lcv_data$toplam)))
 lcv_data$"2021" <- round(lcv_data$toplam*(sales_forecast$`2021`[sales_forecast$arac_tipi=="LCV"]/sum(lcv_data$toplam)))
@@ -26,7 +26,7 @@ lcv_data <- lcv_data %>% mutate(eski_otv_grubu = case_when(
 ))
 
 #net fiyat bulunmasi ----
-lcv_data$eski_otv_orani <- lcv_eski_otv_oranlari$eski_otv_orani[match(lcv_data$eski_otv_grubu,lcv_eski_otv_oranlari$otv_grup)]
+lcv_data$eski_otv_orani <- 0.04
 lcv_data$kdv_orani <- 0.18
 lcv_data <- lcv_data %>% mutate(net_fiyat= fiyat/((1+eski_otv_orani)*(1+kdv_orani)))
 lcv_data$eski_otv_miktari <-  lcv_data$net_fiyat*lcv_data$eski_otv_orani

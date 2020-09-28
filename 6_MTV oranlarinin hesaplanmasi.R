@@ -90,6 +90,7 @@ data <- data %>% filter(!is.na(model))
 
 # 15 yillik veriler
 mtv_oranlari$lifetime_mtv_15_yil <-rowSums(mtv_oranlari %>% select(6:(6+15-1)))
+data$lifetime_mtv_15_yil <- mtv_oranlari$lifetime_mtv_15_yil[match(data$mtv_grubu,mtv_oranlari$mtv_grubu)]
 data$yeni_lifetime_mtv_sadece_co2_15_yil <- data$yeni_mtv_sadece_co2*15
 data$yeni_lifetime_mtv_otv_grubu_co2_15_yil <- data$yeni_mtv_by_otv*15
 data$yeni_lifetime_mtv_co2_araliklari_15_yil <- data$yeni_mtv_co2_araliklari*15

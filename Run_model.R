@@ -21,8 +21,10 @@ source("9_LCV_Hurda_tesviki.R")
 
 source("10_LCV_kredi_indirimi.R")
 
-source("Yakit Tuketimi.R")
+source("11_LCV_MTV oranlarinin hesaplanmasi.R")
 
+source("Yakit Tuketimi.R")
+  
 source("Export.R")
 
 

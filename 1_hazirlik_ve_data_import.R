@@ -41,7 +41,9 @@ otv_grubuna_dayali_mtv <- import("r_input/mtv_oranlari.xlsx",sheet="OTV_grubuna_
 co2_gruplari <- import("r_input/mtv_oranlari.xlsx",sheet="co2_araliklari")
 otv_grubu_co2_araliklari <- import("r_input/mtv_oranlari.xlsx",sheet="otv_grubu_co2_araliklari")
 
-
+lcv_mtv_oranlari <- import("r_input/mtv_oranlari.xlsx",sheet="LCV_MTV_oranlari")
+lcv_co2_gruplari <- import("r_input/mtv_oranlari.xlsx",sheet="lcv_co2_araliklari")
+lcv_mtv_grubu_co2_araliklari <- import("r_input/mtv_oranlari.xlsx",sheet="lcv_co2_aralikli_mtv")
 
 
 
@@ -97,8 +99,9 @@ odd_agustos$toplam <- rowSums(odd_agustos[,39:46])
 
 # LCV segmenti----
 odd_lcv_2020 <- import("r_input/LCV_odd_kpmg_2020.xls",sheet="Sheet1",skip=2) %>% 
-  mutate(fiyat=as.numeric(fiyat),engine_displacement=as.numeric(engine_displacement),co2=as.numeric(co2),
-         yakit_tuketimi=as.numeric(yakit_tuketimi))
+  mutate(fiyat=as.numeric(fiyat),engine_displacement=as.numeric(engine_displacement),
+         co2=as.numeric(co2),agirlik=as.numeric(agirlik),
+         yakit_tuketimi=as.numeric(as.character(sub("," , ".", yakit_tuketimi))))
 
 
 lcv_eski_otv_oranlari <- import("r_input/LCV_HCV inputs.xlsx",sheet="LCV_OTV")
