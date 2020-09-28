@@ -31,9 +31,9 @@ Binek_arac_vergi_gelirleri <- data %>%
           Kredi_indirimli_otv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_OTV_tutari)/milyar, 
           Kredi_indirimli_kdv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_KDV_tutari )/milyar, 
           Mevcut_muhtemel_MTV_geliri         = sum(sales*lifetime_mtv)/milyar,
-          Yeni_muhtemel_MTV_geliri_sadece_co2       = sum(sales*yeni_lifetime_mtv_sadece_co2)/milyar,
-          Yeni_muhtemel_MTV_geliri_otv_grubu_co2    = sum(sales*yeni_lifetime_mtv_otv_grubu_co2)/milyar,
-          Yeni_muhtemel_MTV_geliri_co2_araliklari   = sum(sales*yeni_lifetime_mtv_co2_araliklari)/milyar,
+          Yeni_muhtemel_MTV_geliri_sadece_co2       = sum(yeni_satis*yeni_lifetime_mtv_sadece_co2)/milyar,
+          Yeni_muhtemel_MTV_geliri_otv_grubu_co2    = sum(yeni_satis*yeni_lifetime_mtv_otv_grubu_co2)/milyar,
+          Yeni_muhtemel_MTV_geliri_co2_araliklari   = sum(yeni_satis*yeni_lifetime_mtv_co2_araliklari)/milyar,
           Hurda_tesvikli_mtv_geliri_sadece_co2      = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_sadece_co2 )/milyar,                                                                  
           Hurda_tesvikli_mtv_geliri_otv_grubu_co2   = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_otv_grubu_co2 )/milyar,
           Hurda_tesvikli_mtv_geliri_co2_araliklari  = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_co2_araliklari )/milyar,
@@ -44,7 +44,9 @@ Binek_arac_vergi_gelirleri <- data %>%
           Yeni_OTV_yakit_vergisi_OTV_KDV            = sum(yeni_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
           OTV_ve_hurda_yakit_vergisi_OTV_KDV        = sum(hurda_tesvikli_satis_miktari*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
           OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
-          Kredi_faiz_indirimi_maliyeti              = -1*sum(yillik_faiz_farki*kredi_indirimli_satis)/(milyar)
+          Kredi_faiz_indirimi_maliyeti              = -1*sum(yillik_faiz_farki*kredi_indirimi_hurda_ve_ekstra)/(milyar),
+          Kredi_kullanan_arac_miktari               = sum(kredi_kullanan_arac_miktari),
+          Kredi_indirimi_talep_etkisi               = sum(kredi_indirimi_talep_etkisi)  
           )
 
 
@@ -155,17 +157,22 @@ toplam_satis_yeni <- data %>% group_by(year) %>% summarise(sum(yeni_satis,na.rm=
 
 
 otv_grup_summary <-  data %>% group_by(year,mevcut_otv_grubu) %>% 
-  summarise(mevcut_satis        = sum(sales,na.rm = T),
-            yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
-            yeni_satis          = sum(yeni_satis),
-            hurda_tesvikli_satis= sum(hurda_tesvikli_satis_miktari,na.rm=T),
-            hurda_tesvikli_otv_ortalamasi = weighted.mean(hurda_tesvikli_otv_orani, hurda_tesvikli_satis_miktari,na.rm=T),
+  summarise( mevcut_satis        = sum(sales,na.rm = T),
+             yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
+             grup_yeni_satis          = sum(yeni_satis),
+             grup_hurda_tesvikli_satis= sum(hurda_tesvikli_satis_miktari,na.rm=T),
+             hurda_tesvikli_otv_ortalamasi = weighted.mean(hurda_tesvikli_otv_orani, hurda_tesvikli_satis_miktari,na.rm=T),
+             mevcut_fiyat_ortalamasi = weighted.mean(mevcut_fiyat,sales,na.rm=T),
+             yeni_fiyat_ortalamasi = weighted.mean(yeni_fiyat,yeni_satis,na.rm=T),
+             hurda_fiyat_ortalamasi = weighted.mean(hurda_tesvikli_fiyat,hurda_tesvikli_satis_miktari,na.rm=T),
+             kredi_fiyat_ortalamasi = weighted.mean(hurda_tesvikli_fiyat,kredi_indirimli_satis,na.rm=T),
+            
             ) %>%
   mutate(eski_market_payi       = mevcut_satis/sum(mevcut_satis),
-         yeni_market_payi       = yeni_satis/sum(yeni_satis),
+         yeni_market_payi       = grup_yeni_satis/sum(grup_yeni_satis),
          eski_toplam_talep      = sum(mevcut_satis),
-         yeni_toplam_talep      = sum(yeni_satis),
-          hurda_tesviki_talep   = sum(hurda_tesvikli_satis))
+         yeni_toplam_talep      = sum(grup_yeni_satis),
+         hurda_tesviki_talep   = sum(grup_hurda_tesvikli_satis))
 
 
 otv_grup_summary_path <- paste(output_path,"OTV gruplarindaki degisim ozeti",sep="/")
@@ -173,19 +180,49 @@ otv_grup_summary_path <- paste(otv_grup_summary_path,"xlsx",sep = ".")
 export(otv_grup_summary,otv_grup_summary_path)
 
 
+# Yerli - Yabanci oranlari degisimi
+toplam_satis <- data %>% group_by(year) %>% summarise(sum(sales,na.rm=T))
+toplam_satis_yeni <- data %>% group_by(year) %>% summarise(sum(yeni_satis,na.rm=T))
 
+
+uretim_grup_summary <-  data %>% group_by(year,uretim) %>% 
+  summarise(mevcut_satis        = sum(sales,na.rm = T),
+            yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
+            yeni_satis          = sum(yeni_satis),
+            hurda_tesvikli_satis= sum(hurda_tesvikli_satis_miktari,na.rm=T),
+            hurda_tesvikli_otv_ortalamasi = weighted.mean(hurda_tesvikli_otv_orani, hurda_tesvikli_satis_miktari,na.rm=T),
+            kredi_indirimli_satis = sum(kredi_indirimli_satis)
+  ) %>%
+  mutate(eski_market_payi       = mevcut_satis/sum(mevcut_satis),
+         yeni_market_payi       = yeni_satis/sum(yeni_satis),
+         hurda_tesvikli_market_payi = hurda_tesvikli_satis/sum(hurda_tesvikli_satis),
+         kredi_indirimli_market_payi = kredi_indirimli_satis/sum(kredi_indirimli_satis),
+         eski_toplam_talep      = sum(mevcut_satis),
+         yeni_toplam_talep      = sum(yeni_satis),
+         hurda_tesviki_talep   = sum(hurda_tesvikli_satis))
+
+
+uretim_grup_summary_path <- paste(output_path,"Yerli-Ithal degisim ozeti",sep="/")
+uretim_grup_summary_path <- paste(uretim_grup_summary_path,"xlsx",sep = ".")
+export(uretim_grup_summary,uretim_grup_summary_path)
 
 # PC secilen modellerin yazdirilmasi ----
 
 yazilacak_id <- c("9939","9940")
-model_karsilastirma<-  data %>% filter(year==2020, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
+model_karsilastirma<-  data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
 
 
 model_karsilastirma_path <- paste(output_path,"Secilen model sonuclari",sep="/")
 model_karsilastirma_path <- paste(model_karsilastirma_path,"xlsx",sep = ".")
 export(model_karsilastirma,model_karsilastirma_path)
 
+# MTV ve CO2 araliklari dagilimi 
+mtv_co2_dagilimi <-  data %>% group_by(year,mevcut_otv_grubu,co2_grubu) %>% 
+  summarise(toplam_satis=sum(kredi_indirimli_satis),agirlikli_co2_emisyonu=weighted.mean(co2,kredi_indirimli_satis))
 
+mtv_co2_dagilimi_result_path <- paste(output_path,"MTV CO2 gruplari dagilimi",sep="/")
+mtv_co2_dagilimi_result_path <- paste(mtv_co2_dagilimi_result_path,"xlsx",sep = ".")
+export(mtv_co2_dagilimi,mtv_co2_dagilimi_result_path)
 
 
 # PC 15 yillik mtv ----

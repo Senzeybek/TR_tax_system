@@ -26,6 +26,3 @@ source("11_LCV_MTV oranlarinin hesaplanmasi.R")
 source("Yakit Tuketimi.R")
   
 source("Export.R")
-
-
-

@@ -26,11 +26,20 @@ data$indirimli_yillik_faiz_odemesi <- data$indirimli_faiz_odemesi/ortalama_vade
 data$yillik_faiz_farki <- data$mevcut_yillik_faiz_odemesi-data$indirimli_yillik_faiz_odemesi
 
 
-
 # kredi indirimleri ile gelen satis fiyati
-data <- data %>% mutate(yuzde_kredi_maliyeti_degisimi= (indirimli_kredi_odemesi-mevcut_toplam_kredi_odemesi)/
-                  (hurda_tesvikli_fiyat+mevcut_toplam_kredi_odemesi),
-                kredi_indirimli_satis = round(hurda_tesvikli_satis_miktari*(1+(yuzde_kredi_maliyeti_degisimi*kendi_esnekligi))))
+data <- data %>% mutate(kredi_maliyeti_degisimi        = indirimli_kredi_odemesi-mevcut_toplam_kredi_odemesi,
+                        yuzde_kredi_maliyeti_degisimi  = kredi_maliyeti_degisimi / (hurda_tesvikli_fiyat+mevcut_toplam_faiz_odemesi),
+                        kredi_kullanmayan_arac_miktari = hurda_tesvikli_satis_miktari*(1-kredi_kullanan_arac_orani),
+                        kredi_kullanan_arac_miktari    = hurda_tesvikli_satis_miktari*kredi_kullanan_arac_orani,
+                        kredi_indirimi_talep_etkisi    = kredi_kullanan_arac_miktari* ((yuzde_kredi_maliyeti_degisimi*kendi_esnekligi)),
+                        kredi_indirimi_hurda_ve_ekstra = kredi_kullanan_arac_miktari + kredi_indirimi_talep_etkisi,
+                        kredi_indirimli_satis          = round(kredi_kullanmayan_arac_miktari+kredi_indirimi_hurda_ve_ekstra)
+)
+                                                        
+                                                        
+
+
+
 
 
 

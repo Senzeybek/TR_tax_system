@@ -81,12 +81,12 @@ ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [2,2]
 mevcut_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [3,2]
 indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [4,2]
 max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [5,2]
-kredi_esnekligi <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [6,2]
+kredi_kullanan_arac_orani <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [6,2]
 
 lcv_kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [1,2]
 lcv_ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [2,2]
 lcv_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [5,2]
-
+kredi_esnekligi=0.63 # TODO: bunu degistirirsin 
 
 # Agustosa kadar yillik satislar----
 odd_agustos_2019<-  odd_2019 %>% select(-eylul:-aralik)
