@@ -12,7 +12,7 @@ export(data,data_result_path)
 
 #  Gelir hesaplamasi ----
 
-# PC Binek ----
+#  Binek araclar ----
 
 
 Binek_arac_vergi_gelirleri <- data %>% 
@@ -43,11 +43,12 @@ Binek_arac_vergi_gelirleri <- data %>%
           Mevcut_yakit_vergisi_OTV_KDV              = sum(sales*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
           Yeni_OTV_yakit_vergisi_OTV_KDV            = sum(yeni_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
           OTV_ve_hurda_yakit_vergisi_OTV_KDV        = sum(hurda_tesvikli_satis_miktari*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
-          OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar
+          OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
+          Kredi_faiz_indirimi_maliyeti              = -1*sum(yillik_faiz_farki*kredi_indirimli_satis)/(milyar)
           )
 
 
-for (i in 2:6) {
+for (i in 2:5) {
   for (j in 14:27) {
     Binek_arac_vergi_gelirleri[i,j] <- Binek_arac_vergi_gelirleri[i,j]+
       Binek_arac_vergi_gelirleri[i-1,j] 
@@ -55,29 +56,91 @@ for (i in 2:6) {
 }
 
 
+for (i in 2:5) {
+  for (j in 28) {
+    Binek_arac_vergi_gelirleri[i,j] <- Binek_arac_vergi_gelirleri[i,j]+
+      Binek_arac_vergi_gelirleri[i-1,j] 
+  }
+  if (i>=4){ # 2024 ve 2025 yilinda 3 yil oncesinin kredisi olmasin
+    Binek_arac_vergi_gelirleri[i,j] <- Binek_arac_vergi_gelirleri[i,j] -
+      Binek_arac_vergi_gelirleri[i-3,j]
+  }
+  if (i>=5){ # 2025den 2022 yi cikarirken iki defa ayni isi yapmis oluyoruz onu duzeltiyorum
+    Binek_arac_vergi_gelirleri[i,j] <- Binek_arac_vergi_gelirleri[i,j] +
+      Binek_arac_vergi_gelirleri[i-4,j]
+  }
+}
+
 gelir_result_path <- paste(output_path,"Muhtemel_binek_arac_vergi_gelirleri",sep="/")
 gelir_result_path <- paste(gelir_result_path,"xlsx",sep = ".")
 export(Binek_arac_vergi_gelirleri,gelir_result_path,sheet="binek")
 
 
 
-# ozet 
+# Butun verilerin toplandigi Ozet veriler
+
 Binek_arac_toplam_vergi <- Binek_arac_vergi_gelirleri %>% mutate(
   Mecut_toplam_vergi= Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri+Mevcut_muhtemel_MTV_geliri+Mevcut_yakit_vergisi_OTV_KDV,
   
-  Sadece_OTV_sadece_co2_toplam_vergi = Yeni_toplam_OTV_geliri+Yeni_toplam_KDV_geliri+Yeni_muhtemel_MTV_geliri_sadece_co2+Yeni_OTV_yakit_vergisi_OTV_KDV,
-  Hurda_tesvikli_sadece_co2_toplam_vergi= Hurda_tesvikli_otv_geliri + Hurda_tesvikli_kdv_geliri+Hurda_tesvikli_mtv_geliri_sadece_co2+OTV_ve_hurda_yakit_vergisi_OTV_KDV,
-  Kredi_indirimli_sadece_co2_toplam_vergi=Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+Kredi_indirimli_mtv_geliri_sadece_co2+OTV_hurda_finansman_yakit_vergisi_OTV_KDV,
+  Sadece_OTV_sadece_co2_toplam_vergi = 
+    Yeni_toplam_OTV_geliri+
+    Yeni_toplam_KDV_geliri+
+    Yeni_muhtemel_MTV_geliri_sadece_co2+
+    Yeni_OTV_yakit_vergisi_OTV_KDV,
   
-  Sadece_OTV_otv_grubu_co2_toplam_vergi = Yeni_toplam_OTV_geliri+Yeni_toplam_KDV_geliri+Yeni_muhtemel_MTV_geliri_otv_grubu_co2+Yeni_OTV_yakit_vergisi_OTV_KDV,
-  Hurda_tesvikli_otv_grubu_co2_toplam_vergi= Hurda_tesvikli_otv_geliri + Hurda_tesvikli_kdv_geliri+Hurda_tesvikli_mtv_geliri_otv_grubu_co2+OTV_ve_hurda_yakit_vergisi_OTV_KDV,
-  Kredi_indirimli_otv_grubu_co2_toplam_vergi=Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+Kredi_indirimli_mtv_geliri_otv_grubu_co2+OTV_hurda_finansman_yakit_vergisi_OTV_KDV,
+  Hurda_tesvikli_sadece_co2_toplam_vergi= 
+    Hurda_tesvikli_otv_geliri + 
+    Hurda_tesvikli_kdv_geliri+
+    Hurda_tesvikli_mtv_geliri_sadece_co2+
+    OTV_ve_hurda_yakit_vergisi_OTV_KDV,
   
-  Sadece_OTV_co2_araliklari_toplam_vergi = Yeni_toplam_OTV_geliri+Yeni_toplam_KDV_geliri+Yeni_muhtemel_MTV_geliri_co2_araliklari+Yeni_OTV_yakit_vergisi_OTV_KDV,
-  Hurda_tesvikli_co2_araliklari_toplam_vergi= Hurda_tesvikli_otv_geliri + Hurda_tesvikli_kdv_geliri+Hurda_tesvikli_mtv_geliri_co2_araliklari+OTV_ve_hurda_yakit_vergisi_OTV_KDV,
-  Kredi_indirimli_co2_araliklari_toplam_vergi=Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+Kredi_indirimli_mtv_geliri_co2_araliklari+OTV_hurda_finansman_yakit_vergisi_OTV_KDV
+  Kredi_indirimli_sadece_co2_toplam_vergi=
+    Kredi_indirimli_otv_geliri+
+    Kredi_indirimli_kdv_geliri+
+    Kredi_indirimli_mtv_geliri_sadece_co2+
+    OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
+    Kredi_faiz_indirimi_maliyeti,
+  
+  Sadece_OTV_otv_grubu_co2_toplam_vergi = 
+    Yeni_toplam_OTV_geliri+
+    Yeni_toplam_KDV_geliri+
+    Yeni_muhtemel_MTV_geliri_otv_grubu_co2+
+    Yeni_OTV_yakit_vergisi_OTV_KDV,
+  
+  Hurda_tesvikli_otv_grubu_co2_toplam_vergi= 
+    Hurda_tesvikli_otv_geliri + 
+    Hurda_tesvikli_kdv_geliri+
+    Hurda_tesvikli_mtv_geliri_otv_grubu_co2+
+    OTV_ve_hurda_yakit_vergisi_OTV_KDV,
+  
+  Kredi_indirimli_otv_grubu_co2_toplam_vergi=
+    Kredi_indirimli_otv_geliri+
+    Kredi_indirimli_kdv_geliri+
+    Kredi_indirimli_mtv_geliri_otv_grubu_co2+
+    OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
+    Kredi_faiz_indirimi_maliyeti,
+  
+  Sadece_OTV_co2_araliklari_toplam_vergi = 
+    Yeni_toplam_OTV_geliri+
+    Yeni_toplam_KDV_geliri+
+    Yeni_muhtemel_MTV_geliri_co2_araliklari+
+    Yeni_OTV_yakit_vergisi_OTV_KDV,
+  
+  Hurda_tesvikli_co2_araliklari_toplam_vergi= 
+    Hurda_tesvikli_otv_geliri + 
+    Hurda_tesvikli_kdv_geliri+
+    Hurda_tesvikli_mtv_geliri_co2_araliklari+
+    OTV_ve_hurda_yakit_vergisi_OTV_KDV,
+  
+  Kredi_indirimli_co2_araliklari_toplam_vergi=
+    Kredi_indirimli_otv_geliri+
+    Kredi_indirimli_kdv_geliri+
+    Kredi_indirimli_mtv_geliri_co2_araliklari+
+    OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
+    Kredi_faiz_indirimi_maliyeti
 
-  ) %>% select(year,Mecut_toplam_vergi:Kredi_indirimli_co2_araliklari_toplam_vergi)
+  ) %>% 
+  select(year,Mecut_toplam_vergi:Kredi_indirimli_co2_araliklari_toplam_vergi)
 
 
 ozet_binek_result_path <- paste(output_path,"Ozet Binek arac toplam vergi",sep="/")

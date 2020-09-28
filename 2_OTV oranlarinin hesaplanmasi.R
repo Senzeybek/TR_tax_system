@@ -21,6 +21,10 @@ data$"2025" <- round(data$toplam*(sales_forecast$`2025`[sales_forecast$arac_tipi
 data <- data %>% gather(key=year,value = sales, "2020":"2025")
 data$year <- as.numeric(data$year)
 
+#2020 yili hesaplamadan cikarilmak istendi
+data <- data %>% filter(year!=2020)
+
+
 
 #eski OTV oranlari ----
 
