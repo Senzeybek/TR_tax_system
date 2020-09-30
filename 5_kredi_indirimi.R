@@ -40,9 +40,6 @@ data <- data %>% mutate(kredi_maliyeti_degisimi        = indirimli_kredi_odemesi
 
 
 
-
-
-
 # data$kredi_indirimli_satis <- ifelse(data$yillik_faiz_farki>0,
 #   round(data$hurda_tesvikli_satis_miktari*(1+ (mevcut_yillik_faiz- indirimli_yillik_faiz)*kredi_esnekligi)),
 #   data$hurda_tesvikli_satis_miktari)

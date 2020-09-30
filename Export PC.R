@@ -1,3 +1,4 @@
+dir.create(file.path("r_output"))
 output_path <- paste("Senaryo sonuclari", Sys.time(), sep = "_")
 output_path <- str_replace_all(output_path,":","-")
 output_path <- paste("r_output/", output_path, sep = "")
@@ -151,7 +152,7 @@ export(Binek_arac_toplam_vergi,ozet_binek_result_path,sheet="binek")
 
 
 
-# PC OTV summary tables ----
+#  PC OTV summary tables ----
 toplam_satis <- data %>% group_by(year) %>% summarise(sum(sales,na.rm=T))
 toplam_satis_yeni <- data %>% group_by(year) %>% summarise(sum(yeni_satis,na.rm=T))
 
@@ -279,121 +280,5 @@ ggplot(proposal_result)+
                    box.padding   = 0, 
                    point.padding = 0,show.legend = F)
 ggsave(filename = paste(output_path,'new otv system by CO2.pdf',sep="/"), width = 9.08,height = 5.82)
-
-
-
-
-# LCV  ----
-
-
-LCV_vergi_gelirleri <- lcv_data %>% 
-  group_by(year) %>% 
-  summarise(
-    Mecut_toplam_talep                 = sum(sales),
-    OTV_ve_Hurda_toplam_talep          = sum(hurda_tesvikli_satis_miktari),
-    OTV_Hurda_Kredi_toplam_talep       = sum(kredi_indirimli_satis),
-    Mevcut_muhtemel_OTV_geliri         = sum(mevcut_otv_tutari * (sales))/milyar,
-    Mevcut_muhtemel_KDV_geliri         = sum(mevcut_kdv_tutari * (sales))/milyar,
-    Hurda_tesvikli_otv_geliri          = sum(hurda_tesvikli_satis_miktari*hurda_tesvikli_OTV_tutari)/milyar, 
-    Hurda_tesvikli_kdv_geliri          = sum(hurda_tesvikli_satis_miktari*hurda_tesvikli_KDV_tutari )/milyar, 
-    Kredi_indirimli_otv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_OTV_tutari)/milyar, 
-    Kredi_indirimli_kdv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_KDV_tutari )/milyar, 
-    Mevcut_muhtemel_MTV_geliri         = sum(sales*lifetime_mtv)/milyar,
-    Hurda_tesvikli_mtv_geliri_sadece_co2      = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_sadece_co2 )/milyar,                                                                  
-    Hurda_tesvikli_mtv_geliri_co2_araliklari  = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_co2_araliklari )/milyar,
-    Kredi_indirimli_mtv_geliri_sadece_co2     = sum(kredi_indirimli_satis*yeni_lifetime_mtv_sadece_co2 )/milyar,                                                                  
-    Kredi_indirimli_mtv_geliri_co2_araliklari = sum(kredi_indirimli_satis*yeni_lifetime_mtv_co2_araliklari )/milyar,
-    Mevcut_yakit_vergisi_OTV_KDV              = sum(sales*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
-    OTV_ve_hurda_yakit_vergisi_OTV_KDV        = sum(hurda_tesvikli_satis_miktari*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
-    OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar
-  )
-
-
-
-for (i in 2:6) {
-  for (j in 11:18) {
-    LCV_vergi_gelirleri[i,j] <- LCV_vergi_gelirleri[i,j]+
-      LCV_vergi_gelirleri[i-1,j] 
-  }
-}
-
-
-LCV_gelir_result_path <- paste(output_path,"Muhtemel LCV vergi gelirleri",sep="/")
-LCV_gelir_result_path <- paste(LCV_gelir_result_path,"xlsx",sep = ".")
-export(LCV_vergi_gelirleri,LCV_gelir_result_path)
-
-
-
-# ozet 
-LCV_toplam_vergi <- LCV_vergi_gelirleri %>% mutate(
-  Mecut_toplam_vergi= Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri+Mevcut_muhtemel_MTV_geliri+Mevcut_yakit_vergisi_OTV_KDV,
-  
-  Hurda_tesvikli_sadece_co2_toplam_vergi= Hurda_tesvikli_otv_geliri + Hurda_tesvikli_kdv_geliri+Hurda_tesvikli_mtv_geliri_sadece_co2+OTV_ve_hurda_yakit_vergisi_OTV_KDV,
-  Kredi_indirimli_sadece_co2_toplam_vergi=Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+Kredi_indirimli_mtv_geliri_sadece_co2+OTV_hurda_finansman_yakit_vergisi_OTV_KDV,
-  
-  Hurda_tesvikli_co2_araliklari_toplam_vergi= Hurda_tesvikli_otv_geliri + Hurda_tesvikli_kdv_geliri+Hurda_tesvikli_mtv_geliri_co2_araliklari+OTV_ve_hurda_yakit_vergisi_OTV_KDV,
-  Kredi_indirimli_co2_araliklari_toplam_vergi=Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+Kredi_indirimli_mtv_geliri_co2_araliklari+OTV_hurda_finansman_yakit_vergisi_OTV_KDV
-  
-) %>% select(year,Mecut_toplam_vergi:Kredi_indirimli_co2_araliklari_toplam_vergi)
-
-
-ozet_LCV_result_path <- paste(output_path,"Ozet LCV toplam vergi",sep="/")
-ozet_LCV_result_path <- paste(ozet_LCV_result_path,"xlsx",sep = ".")
-export(LCV_toplam_vergi,ozet_LCV_result_path,sheet="LCV")
-
-
-# LCV OTV summary tables ----
-toplam_satis <- lcv_data %>% group_by(year) %>% summarise(sum(sales,na.rm=T))
-toplam_satis_yeni <- lcv_data %>% group_by(year) %>% summarise(sum(yeni_satis,na.rm=T))
-
-
-lcv_otv_grup_summary <-  lcv_data %>% group_by(year,mevcut_otv_grubu) %>% 
-  summarise(mevcut_satis        = sum(sales,na.rm = T),
-            yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
-            hurda_tesvikli_satis= sum(hurda_tesvikli_satis_miktari,na.rm=T),
-            hurda_tesvikli_otv_ortalamasi = weighted.mean(hurda_tesvikli_otv_orani, hurda_tesvikli_satis_miktari,na.rm=T),
-  ) 
-
-
-lcv_otv_grup_summary_path <- paste(output_path,"LCV OTV gruplarinin degisimi",sep="/")
-lcv_otv_grup_summary_path <- paste(lcv_otv_grup_summary_path,"xlsx",sep = ".")
-export(lcv_otv_grup_summary,lcv_otv_grup_summary_path)
-
-
-
-
-# LCV secilen modellerin yazdirilmasi ----
-
-yazilacak_id <- c("9271")
-lcv_model_karsilastirma<-  lcv_data %>% filter(year==2020, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
-
-
-lcv_model_karsilastirma_path <- paste(output_path,"Secilen LCV modellerin karsilastirilmasi",sep="/")
-lcv_model_karsilastirma_path <- paste(lcv_model_karsilastirma_path,"xlsx",sep = ".")
-export(lcv_model_karsilastirma,lcv_model_karsilastirma_path)
-
-
-
-
-# LCV 15 yillik mtv ----
-
-lcv_uzun_donem_mtv <- lcv_data %>% group_by(year) %>% summarise(
-  Toplam_lifetime_mtv_15_yil = sum(lifetime_mtv_15_yil * sales)/milyar,
-  Toplam_yeni_lifetime_mtv_sadece_co2_15_yil = sum(yeni_lifetime_mtv_sadece_co2_15_yil * kredi_indirimli_satis)/milyar,
-  Toplam_yeni_lifetime_mtv_co2_araliklari_15_yil = sum(yeni_lifetime_mtv_co2_araliklari_15_yil*kredi_indirimli_satis)/milyar
-)
-
-lcv_uzun_donem_mtv_path <- paste(output_path,"15 yillik LCV MTV gelirleri ",sep="/")
-lcv_uzun_donem_mtv_path <- paste(lcv_uzun_donem_mtv_path,"xlsx",sep = ".")
-export(lcv_uzun_donem_mtv,lcv_uzun_donem_mtv_path)
-
-
-
-
-
-
-
-
-
 
 

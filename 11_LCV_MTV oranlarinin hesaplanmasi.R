@@ -35,7 +35,8 @@ lcv_data$lifetime_mtv <- lcv_mtv_oranlari$lifetime_mtv[match(lcv_data$mtv_grubu,
 
 
 #CO2 verisinin olmadigi veriler CO2 ortalamasi ile degistirildi
-lcv_data[is.na(lcv_data$co2),] <- weighted.mean(lcv_data$co2,lcv_data$sales, na.rm=T)
+
+lcv_data$co2<-ifelse(is.na(lcv_data$co2),weighted.mean(lcv_data$co2,lcv_data$sales, na.rm=T),lcv_data$co2)
 
 
 # sadece CO2 emisyonuna dayali vergi sistemi ----

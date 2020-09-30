@@ -2,7 +2,7 @@
 
 #verinin sadelestirilmesi ve yillik forecast rakamlarinin uygulanmasi ----
 
-lcv_data <- odd_lcv_2020 %>% filter(!is.na(fiyat),!is.na(engine_displacement))  
+lcv_data <- odd_lcv_2020 %>% filter(!is.na(fiyat))  
 
 lcv_data$"2020" <- round(lcv_data$toplam*(sales_forecast$`2020`[sales_forecast$arac_tipi=="LCV"]/sum(lcv_data$toplam)))
 lcv_data$"2021" <- round(lcv_data$toplam*(sales_forecast$`2021`[sales_forecast$arac_tipi=="LCV"]/sum(lcv_data$toplam)))
@@ -14,7 +14,7 @@ lcv_data$"2025" <- round(lcv_data$toplam*(sales_forecast$`2025`[sales_forecast$a
 
 lcv_data <- lcv_data %>% gather(key=year,value = sales, "2020":"2025")
 lcv_data$year <- as.numeric(lcv_data$year)
-
+lcv_data <- lcv_data%>% filter(year !=2020)
 
 #eski OTV oranlari ----
 
