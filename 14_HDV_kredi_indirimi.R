@@ -12,7 +12,9 @@
 
 
 #### yukaridaki fonksiyon icin veri gelince bu kisim silinecek
+hdv_data$kullanilan_kredi <- hdv_max_indirimli_kredi_miktari
 hdv_data$avaliable_indirimli_kredi<- hdv_max_indirimli_kredi_miktari
+
 ####
 
 

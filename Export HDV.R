@@ -144,13 +144,13 @@ export(HDV_uretim_grup_summary,HDV_uretim_grup_summary_path)
 
 # HDV secilen modellerin yazdirilmasi ----
 
-yazilacak_id <- c("9271")
-hdv_model_karsilastirma<-  hdv_data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
-
-
-hdv_model_karsilastirma_path <- paste(output_path,"HDV Secilen modellerin karsilastirilmasi",sep="/")
-hdv_model_karsilastirma_path <- paste(hdv_model_karsilastirma_path,"xlsx",sep = ".")
-export(hdv_model_karsilastirma,hdv_model_karsilastirma_path)
+# yazilacak_id <- c("9271")
+# hdv_model_karsilastirma<-  hdv_data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
+# 
+# 
+# hdv_model_karsilastirma_path <- paste(output_path,"HDV Secilen modellerin karsilastirilmasi",sep="/")
+# hdv_model_karsilastirma_path <- paste(hdv_model_karsilastirma_path,"xlsx",sep = ".")
+# export(hdv_model_karsilastirma,hdv_model_karsilastirma_path)
 
 
 
@@ -188,12 +188,12 @@ export(hdv_model_karsilastirma,hdv_model_karsilastirma_path)
 
 # MTV ve CO2 araliklari dagilimi  -----
 
-hdv_mtv_co2_dagilimi <-  hdv_data %>% group_by(year,mtv_grubu,co2_grubu) %>% 
-  summarise(mevcut_satis=sum(sales), toplam_satis=sum(kredi_indirimli_satis),agirlikli_co2_emisyonu=weighted.mean(co2,kredi_indirimli_satis))
-
-hdv_mtv_co2_dagilimi_result_path <- paste(output_path,"HDV MTV CO2 gruplari dagilimi",sep="/")
-hdv_mtv_co2_dagilimi_result_path <- paste(hdv_mtv_co2_dagilimi_result_path,"xlsx",sep = ".")
-export(hdv_mtv_co2_dagilimi,hdv_mtv_co2_dagilimi_result_path)
+# hdv_mtv_co2_dagilimi <-  hdv_data %>% group_by(year,mtv_grubu,co2_grubu) %>% 
+#   summarise(mevcut_satis=sum(sales), toplam_satis=sum(kredi_indirimli_satis),agirlikli_co2_emisyonu=weighted.mean(co2,kredi_indirimli_satis))
+# 
+# hdv_mtv_co2_dagilimi_result_path <- paste(output_path,"HDV MTV CO2 gruplari dagilimi",sep="/")
+# hdv_mtv_co2_dagilimi_result_path <- paste(hdv_mtv_co2_dagilimi_result_path,"xlsx",sep = ".")
+# export(hdv_mtv_co2_dagilimi,hdv_mtv_co2_dagilimi_result_path)
 
 
 

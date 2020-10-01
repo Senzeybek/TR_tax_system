@@ -29,7 +29,7 @@ source("13_HDV_Hurda_tesviki.R")
 
 source("14_HDV_kredi_indirimi.R")
 
-source("11_HDV_MTV oranlarinin hesaplanmasi.R")
+source("15_HDV_MTV oranlarinin hesaplanmasi.R")
 
 source("Yakit Tuketimi.R")
   
