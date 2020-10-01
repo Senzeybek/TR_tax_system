@@ -71,6 +71,7 @@ dizel_litre_kdv  <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[5
 yeni_arac_indirim_orani_grup1 <- import("r_input/hurda_tesviki.xlsx",sheet="binek_arac") [1,2]
 yeni_arac_indirim_orani_grup2 <- import("r_input/hurda_tesviki.xlsx",sheet="binek_arac") [2,2]
 LCV_hurda_tesvik_orani <- import("r_input/hurda_tesviki.xlsx",sheet="LCV") [1,2]
+HDV_hurda_tesvik_orani <- import("r_input/hurda_tesviki.xlsx",sheet="HDV") [1,2]
 
 
 
@@ -83,10 +84,16 @@ indirimli_yillik_faiz <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [4,
 max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [5,2]
 kredi_kullanan_arac_orani <- import("r_input/kredi_indirimi.xlsx",sheet="binek") [6,2]
 
+#lcv
 lcv_kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [1,2]
 lcv_ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [2,2]
 lcv_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="LCV") [5,2]
-kredi_esnekligi=0.63 # TODO: bunu degistirirsin 
+
+#hdv
+hdv_kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [1,2]
+hdv_ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [2,2]
+hdv_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [5,2]
+
 
 # Agustosa kadar yillik satislar----
 odd_agustos_2019<-  odd_2019 %>% select(-eylul:-aralik)
@@ -99,12 +106,22 @@ odd_agustos$toplam <- rowSums(odd_agustos[,39:46])
 
 # LCV segmenti----
 odd_lcv_2020 <- import("r_input/LCV_odd_kpmg_2020.xls",sheet="Sheet1",skip=2) %>% 
-  mutate(fiyat=as.numeric(fiyat),engine_displacement=as.numeric(engine_displacement),
-         co2=as.numeric(co2),agirlik=as.numeric(agirlik),
+  mutate(fiyat=as.numeric(as.character(sub("," , ".", fiyat))),
+         engine_displacement=as.numeric(as.character(sub("," , ".", engine_displacement))),
+         co2=as.numeric(as.character(sub("," , ".", co2))),
+         agirlik=as.numeric(as.character(sub("," , ".", agirlik))),
          yakit_tuketimi=as.numeric(as.character(sub("," , ".", yakit_tuketimi))))
 
 
 lcv_eski_otv_oranlari <- import("r_input/LCV_HCV inputs.xlsx",sheet="LCV_OTV")
+
+
+
+#HDV segmenti -----
+ odd_hdv_2020 <- import("r_input/LCV_HCV inputs.xlsx",sheet="HCV") #%>% 
+#   mutate(
+#          co2=as.numeric(as.character(sub("," , ".", co2))),
+#          yakit_tuketimi=as.numeric(as.character(sub("," , ".", yakit_tuketimi))))
 
 
 # Grafik ve renkler ---- 

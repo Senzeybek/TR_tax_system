@@ -74,7 +74,7 @@ for (i in 2:5) {
   }
 }
 
-gelir_result_path <- paste(output_path,"Muhtemel_binek_arac_vergi_gelirleri",sep="/")
+gelir_result_path <- paste(output_path,"Binek arac Muhtemel vergi gelirleri",sep="/")
 gelir_result_path <- paste(gelir_result_path,"xlsx",sep = ".")
 export(Binek_arac_vergi_gelirleri,gelir_result_path,sheet="binek")
 
@@ -146,7 +146,7 @@ Binek_arac_toplam_vergi <- Binek_arac_vergi_gelirleri %>% mutate(
   select(year,Mecut_toplam_vergi:Kredi_indirimli_co2_araliklari_toplam_vergi)
 
 
-ozet_binek_result_path <- paste(output_path,"Ozet Binek arac toplam vergi",sep="/")
+ozet_binek_result_path <- paste(output_path,"Binek arac Ozet toplam vergi",sep="/")
 ozet_binek_result_path <- paste(ozet_binek_result_path,"xlsx",sep = ".")
 export(Binek_arac_toplam_vergi,ozet_binek_result_path,sheet="binek")
 
@@ -176,7 +176,7 @@ otv_grup_summary <-  data %>% group_by(year,mevcut_otv_grubu) %>%
          hurda_tesviki_talep   = sum(grup_hurda_tesvikli_satis))
 
 
-otv_grup_summary_path <- paste(output_path,"OTV gruplarindaki degisim ozeti",sep="/")
+otv_grup_summary_path <- paste(output_path,"Binek arac OTV gruplarindaki degisim ozeti",sep="/")
 otv_grup_summary_path <- paste(otv_grup_summary_path,"xlsx",sep = ".")
 export(otv_grup_summary,otv_grup_summary_path)
 
@@ -203,7 +203,7 @@ uretim_grup_summary <-  data %>% group_by(year,uretim) %>%
          hurda_tesviki_talep   = sum(hurda_tesvikli_satis))
 
 
-uretim_grup_summary_path <- paste(output_path,"Yerli-Ithal degisim ozeti",sep="/")
+uretim_grup_summary_path <- paste(output_path,"Binek arac Yerli-Ithal degisim ozeti",sep="/")
 uretim_grup_summary_path <- paste(uretim_grup_summary_path,"xlsx",sep = ".")
 export(uretim_grup_summary,uretim_grup_summary_path)
 
@@ -213,7 +213,7 @@ yazilacak_id <- c("9939","9940")
 model_karsilastirma<-  data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
 
 
-model_karsilastirma_path <- paste(output_path,"Secilen model sonuclari",sep="/")
+model_karsilastirma_path <- paste(output_path,"Binek arac Secilen model sonuclari",sep="/")
 model_karsilastirma_path <- paste(model_karsilastirma_path,"xlsx",sep = ".")
 export(model_karsilastirma,model_karsilastirma_path)
 
@@ -235,7 +235,7 @@ uzun_donem_mtv <- data %>% group_by(year) %>% summarise(
   Toplam_yeni_lifetime_mtv_co2_araliklari_15_yil = sum(yeni_lifetime_mtv_co2_araliklari_15_yil*kredi_indirimli_satis)/milyar
 )
 
-uzun_donem_mtv_path <- paste(output_path,"15 yillik MTV gelirleri ",sep="/")
+uzun_donem_mtv_path <- paste(output_path,"Binek arac 15 yillik MTV gelirleri ",sep="/")
 uzun_donem_mtv_path <- paste(uzun_donem_mtv_path,"xlsx",sep = ".")
 export(uzun_donem_mtv,uzun_donem_mtv_path)
 
@@ -282,3 +282,33 @@ ggplot(proposal_result)+
 ggsave(filename = paste(output_path,'new otv system by CO2.pdf',sep="/"), width = 9.08,height = 5.82)
 
 
+
+# Agirlikli MTV ortalamalari ----
+
+MTV_ortalamalari <- data %>% filter(year==2021) %>% 
+  summarise(
+    Mevcut_MTV_ortalama = weighted.mean(lifetime_mtv,sales),
+    Sadece_OTV_degisikliginde_sadece_co2ya_dayali_MTV_ortalamasi = weighted.mean(yeni_mtv_sadece_co2,yeni_satis), 
+    Sadece_OTV_degisikliginde_OTV_gruplarina_dayali_MTV_ortalama = weighted.mean(yeni_lifetime_mtv_otv_grubu_co2,yeni_satis),
+    Sadece_OTV_degisikliginde_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,yeni_satis),
+    Hurda_tesvikli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,hurda_tesvikli_satis_miktari),
+    Hurda_tesvikli_OTV_gruplarina_dayali_MTV_ortalama = weighted.mean(yeni_lifetime_mtv_otv_grubu_co2,hurda_tesvikli_satis_miktari),
+    Hurda_tesvikli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,hurda_tesvikli_satis_miktari),
+    Kredi_indirimli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,kredi_indirimli_satis),
+    Kredi_indirimli_OTV_gruplarina_dayali_MTV_ortalama = weighted.mean(yeni_lifetime_mtv_otv_grubu_co2,kredi_indirimli_satis),
+    Kredi_indirimli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,kredi_indirimli_satis)
+  )
+    
+MTV_ortalamalari_path <- paste(output_path,"Binek arac MTV ortalamalari",sep="/")
+MTV_ortalamalari_path <- paste(MTV_ortalamalari_path,"xlsx",sep = ".")
+export(MTV_ortalamalari,MTV_ortalamalari_path)
+
+    
+    
+    
+                                          
+                                          
+                                          
+
+                                          
+                                          

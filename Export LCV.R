@@ -1,5 +1,14 @@
 
 
+#butun veri ---
+lcv_data_result_path <- paste(output_path,"LCV butun veri",sep="/")
+lcv_data_result_path <- paste(lcv_data_result_path,"xlsx",sep = ".")
+export(lcv_data,lcv_data_result_path)
+
+
+
+#vergi gelirleri detayli -----
+
 
 LCV_vergi_gelirleri <- lcv_data %>% 
   group_by(year) %>% 
@@ -50,7 +59,7 @@ for (i in 2:5) {
   }
 }
 
-LCV_gelir_result_path <- paste(output_path,"Muhtemel LCV vergi gelirleri",sep="/")
+LCV_gelir_result_path <- paste(output_path,"LCV Muhtemel vergi gelirleri",sep="/")
 LCV_gelir_result_path <- paste(LCV_gelir_result_path,"xlsx",sep = ".")
 export(LCV_vergi_gelirleri,LCV_gelir_result_path)
 
@@ -91,37 +100,10 @@ LCV_toplam_vergi <- LCV_vergi_gelirleri %>% mutate(
   select(year,Mecut_toplam_vergi:Kredi_indirimli_co2_araliklari_toplam_vergi)
 
 
-ozet_LCV_result_path <- paste(output_path,"Ozet LCV toplam vergi",sep="/")
+ozet_LCV_result_path <- paste(output_path,"LCV Ozet toplam vergi",sep="/")
 ozet_LCV_result_path <- paste(ozet_LCV_result_path,"xlsx",sep = ".")
 export(LCV_toplam_vergi,ozet_LCV_result_path,sheet="binek")
 
-
-
-
-#  LCV summary tables ----
-
-LCV_segment_summary <-  lcv_data %>% group_by(year,govde_tipi) %>% 
-  summarise( mevcut_satis        = sum(sales,na.rm = T),
-             yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
-             grup_yeni_satis          = sum(yeni_satis),
-             grup_hurda_tesvikli_satis= sum(hurda_tesvikli_satis_miktari,na.rm=T),
-             hurda_tesvikli_otv_ortalamasi = weighted.mean(hurda_tesvikli_otv_orani, hurda_tesvikli_satis_miktari,na.rm=T),
-             mevcut_fiyat_ortalamasi = weighted.mean(mevcut_fiyat,sales,na.rm=T),
-             yeni_fiyat_ortalamasi = weighted.mean(yeni_fiyat,yeni_satis,na.rm=T),
-             hurda_fiyat_ortalamasi = weighted.mean(hurda_tesvikli_fiyat,hurda_tesvikli_satis_miktari,na.rm=T),
-             kredi_fiyat_ortalamasi = weighted.mean(hurda_tesvikli_fiyat,kredi_indirimli_satis,na.rm=T),
-             
-  ) %>%
-  mutate(eski_market_payi       = mevcut_satis/sum(mevcut_satis),
-         yeni_market_payi       = grup_yeni_satis/sum(grup_yeni_satis),
-         eski_toplam_talep      = sum(mevcut_satis),
-         yeni_toplam_talep      = sum(grup_yeni_satis),
-         hurda_tesviki_talep   = sum(grup_hurda_tesvikli_satis))
-
-
-lcv_otv_grup_summary_path <- paste(output_path,"OTV gruplarindaki degisim ozeti",sep="/")
-lcv_otv_grup_summary_path <- paste(lcv_otv_grup_summary_path,"xlsx",sep = ".")
-export(LCV_segment_summary,lcv_otv_grup_summary_path)
 
 
 
@@ -144,9 +126,9 @@ LCV_uretim_grup_summary <-  lcv_data %>% group_by(year,uretim) %>%
          hurda_tesviki_talep   = sum(hurda_tesvikli_satis))
 
 
-LCV_uretim_grup_summary <- paste(output_path,"Yerli-Ithal degisim ozeti",sep="/")
-LCV_uretim_grup_summary <- paste(LCV_uretim_grup_summary,"xlsx",sep = ".")
-export(LCV_uretim_grup_summary,LCV_uretim_grup_summary)
+LCV_uretim_grup_summary_path <- paste(output_path,"LCV Yerli-Ithal degisim ozeti",sep="/")
+LCV_uretim_grup_summary_path <- paste(LCV_uretim_grup_summary_path,"xlsx",sep = ".")
+export(LCV_uretim_grup_summary,LCV_uretim_grup_summary_path)
 
 
 
@@ -161,7 +143,7 @@ yazilacak_id <- c("9271")
 lcv_model_karsilastirma<-  lcv_data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
 
 
-lcv_model_karsilastirma_path <- paste(output_path,"Secilen LCV modellerin karsilastirilmasi",sep="/")
+lcv_model_karsilastirma_path <- paste(output_path,"LCV Secilen modellerin karsilastirilmasi",sep="/")
 lcv_model_karsilastirma_path <- paste(lcv_model_karsilastirma_path,"xlsx",sep = ".")
 export(lcv_model_karsilastirma,lcv_model_karsilastirma_path)
 
@@ -176,16 +158,37 @@ lcv_uzun_donem_mtv <- lcv_data %>% group_by(year) %>% summarise(
   Toplam_yeni_lifetime_mtv_co2_araliklari_15_yil = sum(yeni_lifetime_mtv_co2_araliklari_15_yil*kredi_indirimli_satis)/milyar
 )
 
-lcv_uzun_donem_mtv_path <- paste(output_path,"15 yillik LCV MTV gelirleri ",sep="/")
+lcv_uzun_donem_mtv_path <- paste(output_path,"LCV 15 yillik MTV gelirleri ",sep="/")
 lcv_uzun_donem_mtv_path <- paste(lcv_uzun_donem_mtv_path,"xlsx",sep = ".")
 export(lcv_uzun_donem_mtv,lcv_uzun_donem_mtv_path)
 
 
 
+# Agirlikli MTV ortalamalari ----
+
+LCV_MTV_ortalamalari <- lcv_data %>% filter(year==2021) %>% 
+  summarise(
+    Mevcut_MTV_ortalama = weighted.mean(lifetime_mtv,sales),
+    Hurda_tesvikli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,hurda_tesvikli_satis_miktari),
+    Hurda_tesvikli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,hurda_tesvikli_satis_miktari),
+    Kredi_indirimli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,kredi_indirimli_satis),
+    Kredi_indirimli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,kredi_indirimli_satis)
+  )
+
+LCV_MTV_ortalamalari_path <- paste(output_path,"LCV MTV ortalamalari",sep="/")
+LCV_MTV_ortalamalari_path <- paste(LCV_MTV_ortalamalari_path,"xlsx",sep = ".")
+export(LCV_MTV_ortalamalari,LCV_MTV_ortalamalari_path)
 
 
 
+# MTV ve CO2 araliklari dagilimi  -----
 
+lcv_mtv_co2_dagilimi <-  lcv_data %>% group_by(year,mtv_grubu,co2_grubu) %>% 
+  summarise(mevcut_satis=sum(sales), toplam_satis=sum(kredi_indirimli_satis),agirlikli_co2_emisyonu=weighted.mean(co2,kredi_indirimli_satis))
+
+lcv_mtv_co2_dagilimi_result_path <- paste(output_path,"LCV MTV CO2 gruplari dagilimi",sep="/")
+lcv_mtv_co2_dagilimi_result_path <- paste(lcv_mtv_co2_dagilimi_result_path,"xlsx",sep = ".")
+export(lcv_mtv_co2_dagilimi,lcv_mtv_co2_dagilimi_result_path)
 
 
 

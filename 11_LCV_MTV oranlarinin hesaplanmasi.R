@@ -39,6 +39,7 @@ lcv_data$lifetime_mtv <- lcv_mtv_oranlari$lifetime_mtv[match(lcv_data$mtv_grubu,
 lcv_data$co2<-ifelse(is.na(lcv_data$co2),weighted.mean(lcv_data$co2,lcv_data$sales, na.rm=T),lcv_data$co2)
 
 
+
 # sadece CO2 emisyonuna dayali vergi sistemi ----
 
 lcv_data$yeni_mtv_sadece_co2 <- lcv_data$co2*mtv_per_co2
@@ -65,17 +66,15 @@ lcv_mtv_grubu_co2_araliklari <- lcv_mtv_grubu_co2_araliklari %>%
   )
 
 
-lcv_data <- lcv_data %>% right_join(lcv_mtv_grubu_co2_araliklari, by=c("mtv_grubu","co2_grubu"))
+
+lcv_data$yeni_mtv_co2_araliklari <- lcv_mtv_grubu_co2_araliklari$yeni_mtv_co2_araliklari[match
+                                                  (paste(lcv_data$mtv_grubu,lcv_data$co2_grubu),
+                                                   paste(lcv_mtv_grubu_co2_araliklari$mtv_grubu,lcv_mtv_grubu_co2_araliklari$co2_grubu))]
 
 lcv_data$yeni_lifetime_mtv_co2_araliklari <- lcv_data$yeni_mtv_co2_araliklari*arac_omru
 
 
-# clearing empty rows
-lcv_data <- lcv_data %>% filter(!is.na(model))
-
-
-
-# 15 yillik veriler
+# # 15 yillik veriler
 mtv_oranlari$lifetime_mtv_15_yil <-rowSums(mtv_oranlari %>% select(6:(6+15-1)))
 lcv_data$lifetime_mtv_15_yil <- mtv_oranlari$lifetime_mtv_15_yil[match(lcv_data$mtv_grubu,mtv_oranlari$mtv_grubu)]
 lcv_data$yeni_lifetime_mtv_sadece_co2_15_yil <- lcv_data$yeni_lifetime_mtv_sadece_co2*15

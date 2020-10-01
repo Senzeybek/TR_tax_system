@@ -23,8 +23,20 @@ source("10_LCV_kredi_indirimi.R")
 
 source("11_LCV_MTV oranlarinin hesaplanmasi.R")
 
+source("12_HDV_OTV oranlarinin hesaplanmasi.R")
+
+source("13_HDV_Hurda_tesviki.R")
+
+source("14_HDV_kredi_indirimi.R")
+
+source("11_HDV_MTV oranlarinin hesaplanmasi.R")
+
 source("Yakit Tuketimi.R")
   
 source("Export PC.R")
 
 source("Export LCV.R")
+
+source("Export HDV.R")
+
+
