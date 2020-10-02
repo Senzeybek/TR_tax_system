@@ -26,7 +26,12 @@ lcv_data <- lcv_data %>% mutate(eski_otv_grubu = case_when(
 ))
 
 #net fiyat bulunmasi ----
-lcv_data$eski_otv_orani <- 0.04
+lcv_data <- lcv_data %>% mutate(eski_otv_orani= case_when(
+  str_detect(segment,"Kombi Van") ~ 0.15, 
+  govde_tipi=="Minibüs"  ~ 0.056,
+  TRUE ~ 0.04
+))
+
 lcv_data$kdv_orani <- 0.18
 lcv_data <- lcv_data %>% mutate(net_fiyat= fiyat/((1+eski_otv_orani)*(1+kdv_orani)))
 lcv_data$eski_otv_miktari <-  lcv_data$net_fiyat*lcv_data$eski_otv_orani

@@ -20,7 +20,7 @@ hdv_data$hurda_tesvikli_fiyat_degisimi <- hdv_data$hurda_tesvikli_fiyat - hdv_da
 # tesvik sayesinde gelecek indirimin talep etkisi
 hdv_data$hurda_tesvikli_fiyat_degisim_orani <- hdv_data$hurda_tesvikli_fiyat_degisimi/ hdv_data$yeni_fiyat
 
-hdv_data$hurda_tesviki_talep_degisim_orani  <- hdv_data$hurda_tesvikli_fiyat_degisim_orani*lcv_esneklik
+hdv_data$hurda_tesviki_talep_degisim_orani  <- hdv_data$hurda_tesvikli_fiyat_degisim_orani*hdv_esneklik
 
 hdv_data$hurda_tesvikli_satis_miktari       <- round(hdv_data$yeni_satis*(1+hdv_data$hurda_tesviki_talep_degisim_orani))
 

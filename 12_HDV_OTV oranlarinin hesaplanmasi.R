@@ -13,13 +13,13 @@ hdv_data$"2024" <- round(hdv_data$toplam*(sales_forecast$`2024`[sales_forecast$a
 hdv_data$"2025" <- round(hdv_data$toplam*(sales_forecast$`2025`[sales_forecast$arac_tipi=="HDV"]/sum(hdv_data$toplam)))
 
 
+
 hdv_data <- hdv_data %>% gather(key=year,value = sales, "2020":"2025")
 hdv_data$year <- as.numeric(hdv_data$year)
 hdv_data <- hdv_data%>% filter(year !=2020)
 
 
 #net fiyat bulunmasi ----
-
 
 hdv_data$eski_otv_miktari <-  hdv_data$net_fiyat*hdv_data$otv_orani
 hdv_data$eski_kdv_miktari <- (hdv_data$net_fiyat+hdv_data$eski_otv_miktari)*hdv_data$kdv_orani

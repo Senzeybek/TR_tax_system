@@ -54,7 +54,7 @@ rakip_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik (binek)")[2,2]
 tco_esnekligi <- import('r_input/esneklik.xlsx',sheet="esneklik (binek)")[3,2]
 segment_capraz_esneklik <- import('r_input/esneklik.xlsx',sheet="kleit_segment_elasticity")
 lcv_esneklik <- import('r_input/esneklik.xlsx',sheet="LCV esneklik")[1,2]
-
+hdv_esneklik <- import('r_input/esneklik.xlsx',sheet="HDV")[1,2]
 
 
 # yakit tuketimi----

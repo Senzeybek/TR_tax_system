@@ -3,17 +3,17 @@
 
 source("1_hazirlik_ve_data_import.R" )
 
-source("2_OTV oranlarinin hesaplanmasi.R")
+source("2_PC_OTV oranlarinin hesaplanmasi.R")
 
-source("3_Esneklik.R")  #source("3_Esneklik (with rakip and segment).R")
+source("3_PC_Esneklik.R")  #source("3_Esneklik (with rakip and segment).R")
 
-source("4_Hurda tesviki.R")
+source("4_PC_Hurda tesviki.R")
 
-source("5_kredi_indirimi.R")
+source("5_PC_kredi_indirimi.R")
 
-source("6_MTV oranlarinin hesaplanmasi.R")
+source("6_PC_MTV oranlarinin hesaplanmasi.R")
 
-source("7_TCO hesaplamalari.R")
+source("7_PC_TCO hesaplamalari.R")
 
 source("8_LCV_OTV oranlarinin hesaplanmasi.R")
 
@@ -31,7 +31,7 @@ source("14_HDV_kredi_indirimi.R")
 
 source("15_HDV_MTV oranlarinin hesaplanmasi.R")
 
-source("Yakit Tuketimi.R")
+source("16_Yakit Tuketimi.R")
   
 source("Export PC.R")
 
