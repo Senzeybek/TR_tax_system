@@ -39,4 +39,6 @@ source("Export LCV.R")
 
 source("Export HDV.R")
 
+source("Toplam sonuclar.R")
+
 
