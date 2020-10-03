@@ -28,20 +28,15 @@ hdv_mtv_oranlari$lifetime_mtv <-rowSums(hdv_mtv_oranlari %>% select(7:(7+arac_om
 hdv_data$lifetime_mtv <- hdv_mtv_oranlari$lifetime_mtv[match(hdv_data$mtv_grubu,hdv_mtv_oranlari$mtv_grubu)]
 # 
 # 
-# 
-# #CO2 verisinin olmadigi veriler CO2 ortalamasi ile degistirildi
-# 
-# hdv_data$co2<-ifelse(is.na(hdv_data$co2),weighted.mean(hdv_data$co2,hdv_data$sales, na.rm=T),hdv_data$co2)
-# 
-# 
-# 
-# # sadece CO2 emisyonuna dayali vergi sistemi ----
-# 
-# hdv_data$yeni_mtv_sadece_co2 <- hdv_data$co2*mtv_per_co2
-# 
-# hdv_data$yeni_lifetime_mtv_sadece_co2 <- hdv_data$yeni_mtv_sadece_co2*arac_omru
-# 
-# 
+
+
+# sadece CO2 emisyonuna dayali vergi sistemi ----
+
+hdv_data$yeni_mtv_sadece_co2 <- hdv_data$co2*hdv_mtv_per_co2
+
+hdv_data$yeni_lifetime_mtv_sadece_co2 <- hdv_data$yeni_mtv_sadece_co2*arac_omru
+
+
 # 
 # # Opsiyon3: CO2 araliklarina gore vergilendirme ----
 # 
@@ -70,8 +65,7 @@ hdv_data$lifetime_mtv <- hdv_mtv_oranlari$lifetime_mtv[match(hdv_data$mtv_grubu,
 # 
 # 
 # # # 15 yillik veriler
-# mtv_oranlari$lifetime_mtv_15_yil <-rowSums(mtv_oranlari %>% select(6:(6+15-1)))
-# hdv_data$lifetime_mtv_15_yil <- mtv_oranlari$lifetime_mtv_15_yil[match(hdv_data$mtv_grubu,mtv_oranlari$mtv_grubu)]
-# hdv_data$yeni_lifetime_mtv_sadece_co2_15_yil <- hdv_data$yeni_lifetime_mtv_sadece_co2*15
-# hdv_data$yeni_lifetime_mtv_co2_araliklari_15_yil <- hdv_data$yeni_mtv_co2_araliklari*15
+hdv_mtv_oranlari$lifetime_mtv_15_yil <-rowSums(hdv_mtv_oranlari %>% select(7:(7+15-1)))
+hdv_data$lifetime_mtv_15_yil <- hdv_mtv_oranlari$lifetime_mtv_15_yil[match(hdv_data$mtv_grubu,hdv_mtv_oranlari$mtv_grubu)]
+hdv_data$yeni_lifetime_mtv_sadece_co2_15_yil <- hdv_data$yeni_lifetime_mtv_sadece_co2*15
 

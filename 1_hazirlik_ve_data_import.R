@@ -45,6 +45,9 @@ lcv_mtv_oranlari <- import("r_input/mtv_oranlari.xlsx",sheet="LCV_MTV_oranlari")
 lcv_co2_gruplari <- import("r_input/mtv_oranlari.xlsx",sheet="lcv_co2_araliklari")
 lcv_mtv_grubu_co2_araliklari <- import("r_input/mtv_oranlari.xlsx",sheet="lcv_co2_aralikli_mtv")
 
+hdv_mtv_oranlari <- import("r_input/mtv_oranlari.xlsx",sheet="HCV_MTV")
+hdv_mtv_per_co2 <- import("r_input/mtv_oranlari.xlsx",sheet="degiskenler")[3,2]
+
 
 
 # segment ve esneklik----

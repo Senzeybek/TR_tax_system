@@ -23,11 +23,8 @@ lcv_data <- lcv_data %>% mutate(
 
 
 # # HDV
-# hdv_data$real_world_yakit_tuketimi <- hdv_data$yakit_tuketimi*1.38
-# 
-# hdv_data <- hdv_data %>% mutate(
-#   yakit_vergisi=case_when(  
-#     hdv_data$powertrain=="Dizel" ~ dizel_litre_otv+dizel_litre_kdv,
-#     hdv_data$powertrain%in% c("Benzin","Hybrid") ~ benzin_litre_otv+benzin_litre_kdv),
-#   toplam_yakit_tuketimi=(arac_yillik_km/100)*real_world_yakit_tuketimi
-# )  
+
+hdv_data <- hdv_data %>% mutate(
+  yakit_vergisi=dizel_litre_otv+dizel_litre_kdv,
+  toplam_yakit_tuketimi=(arac_yillik_km/100)*yakit_tuketimi
+)

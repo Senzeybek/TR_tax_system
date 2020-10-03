@@ -22,42 +22,42 @@ HDV_vergi_gelirleri <- hdv_data %>%
     Hurda_tesvikli_kdv_geliri          = sum(hurda_tesvikli_satis_miktari*hurda_tesvikli_KDV_tutari )/milyar, 
     Kredi_indirimli_otv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_OTV_tutari)/milyar, 
     Kredi_indirimli_kdv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_KDV_tutari )/milyar, 
-    #Mevcut_muhtemel_MTV_geliri         = sum(sales*lifetime_mtv)/milyar,
-    #Hurda_tesvikli_mtv_geliri_sadece_co2      = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_sadece_co2 )/milyar,                                                                  
+    Mevcut_muhtemel_MTV_geliri         = sum(sales*lifetime_mtv)/milyar,
+    Hurda_tesvikli_mtv_geliri_sadece_co2      = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_sadece_co2 )/milyar,
     #Hurda_tesvikli_mtv_geliri_co2_araliklari  = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_co2_araliklari )/milyar,
-    #Kredi_indirimli_mtv_geliri_sadece_co2     = sum(kredi_indirimli_satis*yeni_lifetime_mtv_sadece_co2 )/milyar,                                                                  
+    Kredi_indirimli_mtv_geliri_sadece_co2     = sum(kredi_indirimli_satis*yeni_lifetime_mtv_sadece_co2 )/milyar,
     #Kredi_indirimli_mtv_geliri_co2_araliklari = sum(kredi_indirimli_satis*yeni_lifetime_mtv_co2_araliklari )/milyar,
-    #Mevcut_yakit_vergisi_OTV_KDV              = sum(sales*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
-    #OTV_ve_hurda_yakit_vergisi_OTV_KDV        = sum(hurda_tesvikli_satis_miktari*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
-    #OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
+    Mevcut_yakit_vergisi_OTV_KDV              = sum(sales*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
+    OTV_ve_hurda_yakit_vergisi_OTV_KDV        = sum(hurda_tesvikli_satis_miktari*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
+    OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
     Kredi_faiz_indirimi_maliyeti              = -1*sum(yillik_faiz_farki*kredi_indirimi_hurda_ve_ekstra)/(milyar),
     Kredi_kullanan_arac_miktari               = sum(kredi_kullanan_arac_miktari),
     Kredi_indirimi_talep_etkisi               = sum(kredi_indirimi_talep_etkisi)  
   )
 
 
-# for (i in 2:5) {
-#   for (j in 11:18) {
-#     HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j]+
-#       HDV_vergi_gelirleri[i-1,j] 
-#   }
-# }
-# 
-# 
-# for (i in 2:5) {
-#   for (j in 19) {
-#     HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j]+
-#       HDV_vergi_gelirleri[i-1,j] 
-#   }
-#   if (i>=4){ # 2024 ve 2025 yilinda 3 yil oncesinin kredisi olmasin
-#     HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j] -
-#       HDV_vergi_gelirleri[i-3,j]
-#   }
-#   if (i>=5){ # 2025den 2022 yi cikarirken iki defa ayni isi yapmis oluyoruz onu duzeltiyorum
-#     HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j] +
-#       HDV_vergi_gelirleri[i-4,j]
-#   }
-# }
+for (i in 2:5) {
+  for (j in 11:16) {
+    HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j]+
+      HDV_vergi_gelirleri[i-1,j]
+  }
+}
+#
+#
+for (i in 2:5) {
+  for (j in 17) {
+    HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j]+
+      HDV_vergi_gelirleri[i-1,j]
+  }
+  if (i>=4){ # 2024 ve 2025 yilinda 3 yil oncesinin kredisi olmasin
+    HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j] -
+      HDV_vergi_gelirleri[i-3,j]
+  }
+  if (i>=5){ # 2025den 2022 yi cikarirken iki defa ayni isi yapmis oluyoruz onu duzeltiyorum
+    HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j] +
+      HDV_vergi_gelirleri[i-4,j]
+  }
+}
 
 HDV_gelir_result_path <- paste(output_path,"HDV Muhtemel vergi gelirleri",sep="/")
 HDV_gelir_result_path <- paste(HDV_gelir_result_path,"xlsx",sep = ".")
@@ -69,39 +69,39 @@ export(HDV_vergi_gelirleri,HDV_gelir_result_path)
 HDV_toplam_vergi <- HDV_vergi_gelirleri %>% mutate(
   Mecut_toplam_vergi= 
     Mevcut_muhtemel_OTV_geliri+
-    Mevcut_muhtemel_KDV_geliri,
-    #Mevcut_muhtemel_MTV_geliri+
-    #Mevcut_yakit_vergisi_OTV_KDV,
+    Mevcut_muhtemel_KDV_geliri+
+    Mevcut_muhtemel_MTV_geliri+
+    Mevcut_yakit_vergisi_OTV_KDV,
   
   
   Hurda_tesvikli_sadece_co2_toplam_vergi= 
     Hurda_tesvikli_otv_geliri + 
-    Hurda_tesvikli_kdv_geliri,
-    #Hurda_tesvikli_mtv_geliri_sadece_co2+
-    #OTV_ve_hurda_yakit_vergisi_OTV_KDV,
+    Hurda_tesvikli_kdv_geliri+
+    Hurda_tesvikli_mtv_geliri_sadece_co2+
+    OTV_ve_hurda_yakit_vergisi_OTV_KDV,
   
   Kredi_indirimli_sadece_co2_toplam_vergi=
     Kredi_indirimli_otv_geliri+
     Kredi_indirimli_kdv_geliri+
-    #Kredi_indirimli_mtv_geliri_sadece_co2+
-    #OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
+    Kredi_indirimli_mtv_geliri_sadece_co2+
+    OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
     Kredi_faiz_indirimi_maliyeti,
   
-  Hurda_tesvikli_co2_araliklari_toplam_vergi= 
-    Hurda_tesvikli_otv_geliri + 
-    Hurda_tesvikli_kdv_geliri,
-    #Hurda_tesvikli_mtv_geliri_co2_araliklari+
-    #OTV_ve_hurda_yakit_vergisi_OTV_KDV
+  # Hurda_tesvikli_co2_araliklari_toplam_vergi= 
+  #   Hurda_tesvikli_otv_geliri +
+  #   Hurda_tesvikli_kdv_geliri+
+  #   Hurda_tesvikli_mtv_geliri_co2_araliklari+
+  #   OTV_ve_hurda_yakit_vergisi_OTV_KDV,
   
-  Kredi_indirimli_co2_araliklari_toplam_vergi=
-    Kredi_indirimli_otv_geliri+
-    Kredi_indirimli_kdv_geliri+
-    #Kredi_indirimli_mtv_geliri_co2_araliklari+
-    #OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
-    Kredi_faiz_indirimi_maliyeti
+  # Kredi_indirimli_co2_araliklari_toplam_vergi=
+  #   Kredi_indirimli_otv_geliri+
+  #   Kredi_indirimli_kdv_geliri+
+  #   Kredi_indirimli_mtv_geliri_co2_araliklari+
+  #   OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
+  #   Kredi_faiz_indirimi_maliyeti
   
 ) %>% 
-  select(year,Mecut_toplam_vergi:Kredi_indirimli_co2_araliklari_toplam_vergi)
+  select(year,Mecut_toplam_vergi:Kredi_indirimli_sadece_co2_toplam_vergi)
 
 
 ozet_HDV_result_path <- paste(output_path,"HDV Ozet toplam vergi",sep="/")
@@ -157,32 +157,32 @@ export(HDV_uretim_grup_summary,HDV_uretim_grup_summary_path)
 
 # HDV 15 yillik mtv ----
 
-# hdv_uzun_donem_mtv <- hdv_data %>% group_by(year) %>% summarise(
-#   Toplam_lifetime_mtv_15_yil = sum(lifetime_mtv_15_yil * sales)/milyar,
-#   Toplam_yeni_lifetime_mtv_sadece_co2_15_yil = sum(yeni_lifetime_mtv_sadece_co2_15_yil * kredi_indirimli_satis)/milyar,
-#   Toplam_yeni_lifetime_mtv_co2_araliklari_15_yil = sum(yeni_lifetime_mtv_co2_araliklari_15_yil*kredi_indirimli_satis)/milyar
-# )
-# 
-# hdv_uzun_donem_mtv_path <- paste(output_path,"HDV 15 yillik MTV gelirleri ",sep="/")
-# hdv_uzun_donem_mtv_path <- paste(hdv_uzun_donem_mtv_path,"xlsx",sep = ".")
-# export(hdv_uzun_donem_mtv,hdv_uzun_donem_mtv_path)
+hdv_uzun_donem_mtv <- hdv_data %>% group_by(year) %>% summarise(
+  Toplam_lifetime_mtv_15_yil = sum(lifetime_mtv_15_yil * sales)/milyar,
+  Toplam_yeni_lifetime_mtv_sadece_co2_15_yil = sum(yeni_lifetime_mtv_sadece_co2_15_yil * kredi_indirimli_satis)/milyar,
+  #Toplam_yeni_lifetime_mtv_co2_araliklari_15_yil = sum(yeni_lifetime_mtv_co2_araliklari_15_yil*kredi_indirimli_satis)/milyar
+)
+
+hdv_uzun_donem_mtv_path <- paste(output_path,"HDV 15 yillik MTV gelirleri ",sep="/")
+hdv_uzun_donem_mtv_path <- paste(hdv_uzun_donem_mtv_path,"xlsx",sep = ".")
+export(hdv_uzun_donem_mtv,hdv_uzun_donem_mtv_path)
 
 
 
 # Agirlikli MTV ortalamalari ----
 
-# HDV_MTV_ortalamalari <- hdv_data %>% filter(year==2021) %>% 
-#   summarise(
-#     Mevcut_MTV_ortalama = weighted.mean(lifetime_mtv,sales),
-#     Hurda_tesvikli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,hurda_tesvikli_satis_miktari),
-#     Hurda_tesvikli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,hurda_tesvikli_satis_miktari),
-#     Kredi_indirimli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,kredi_indirimli_satis),
-#     Kredi_indirimli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,kredi_indirimli_satis)
-#   )
+HDV_MTV_ortalamalari <- hdv_data %>% filter(year==2021) %>%
+  summarise(
+    Mevcut_MTV_ortalama = weighted.mean(lifetime_mtv,sales),
+    Hurda_tesvikli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,hurda_tesvikli_satis_miktari),
+    # Hurda_tesvikli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,hurda_tesvikli_satis_miktari),
+    Kredi_indirimli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,kredi_indirimli_satis),
+    # Kredi_indirimli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,kredi_indirimli_satis)
+  )
 # 
-# HDV_MTV_ortalamalari_path <- paste(output_path,"HDV MTV ortalamalari",sep="/")
-# HDV_MTV_ortalamalari_path <- paste(HDV_MTV_ortalamalari_path,"xlsx",sep = ".")
-# export(HDV_MTV_ortalamalari,HDV_MTV_ortalamalari_path)
+HDV_MTV_ortalamalari_path <- paste(output_path,"HDV MTV ortalamalari",sep="/")
+HDV_MTV_ortalamalari_path <- paste(HDV_MTV_ortalamalari_path,"xlsx",sep = ".")
+export(HDV_MTV_ortalamalari,HDV_MTV_ortalamalari_path)
 
 
 

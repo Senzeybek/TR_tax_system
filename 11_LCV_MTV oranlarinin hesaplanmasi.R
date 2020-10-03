@@ -75,8 +75,8 @@ lcv_data$yeni_lifetime_mtv_co2_araliklari <- lcv_data$yeni_mtv_co2_araliklari*ar
 
 
 # # 15 yillik veriler
-mtv_oranlari$lifetime_mtv_15_yil <-rowSums(mtv_oranlari %>% select(6:(6+15-1)))
-lcv_data$lifetime_mtv_15_yil <- mtv_oranlari$lifetime_mtv_15_yil[match(lcv_data$mtv_grubu,mtv_oranlari$mtv_grubu)]
+lcv_mtv_oranlari$lifetime_mtv_15_yil <-rowSums(lcv_mtv_oranlari %>% select(7:(7+15-1)))
+lcv_data$lifetime_mtv_15_yil <- lcv_mtv_oranlari$lifetime_mtv_15_yil[match(lcv_data$mtv_grubu,lcv_mtv_oranlari$mtv_grubu)]
 lcv_data$yeni_lifetime_mtv_sadece_co2_15_yil <- lcv_data$yeni_lifetime_mtv_sadece_co2*15
 lcv_data$yeni_lifetime_mtv_co2_araliklari_15_yil <- lcv_data$yeni_mtv_co2_araliklari*15
 
