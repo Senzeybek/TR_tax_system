@@ -41,4 +41,8 @@ source("Export HDV.R")
 
 source("Toplam sonuclar.R")
 
+source("Talep ve gelirdeki degisim ozeti Binek.R")
 
+source("Talep ve gelirdeki degisim ozeti LCV.R")
+
+source("Talep ve gelirdeki degisim ozeti HDV.R")
