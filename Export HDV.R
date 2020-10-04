@@ -24,9 +24,9 @@ HDV_vergi_gelirleri <- hdv_data %>%
     Kredi_indirimli_kdv_geliri         = sum(kredi_indirimli_satis*hurda_tesvikli_KDV_tutari )/milyar, 
     Mevcut_muhtemel_MTV_geliri         = sum(sales*lifetime_mtv)/milyar,
     Hurda_tesvikli_mtv_geliri_sadece_co2      = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_sadece_co2 )/milyar,
-    #Hurda_tesvikli_mtv_geliri_co2_araliklari  = sum(hurda_tesvikli_satis_miktari*yeni_lifetime_mtv_co2_araliklari )/milyar,
+    Hurda_tesvikli_arttirilmis_mtv_geliri  =  sum(hurda_tesvikli_satis_miktari*arttirilmis_mtv )/milyar,
     Kredi_indirimli_mtv_geliri_sadece_co2     = sum(kredi_indirimli_satis*yeni_lifetime_mtv_sadece_co2 )/milyar,
-    #Kredi_indirimli_mtv_geliri_co2_araliklari = sum(kredi_indirimli_satis*yeni_lifetime_mtv_co2_araliklari )/milyar,
+    Kredi_indirimli_arttirilmis_mtv_geliri = sum(kredi_indirimli_satis*arttirilmis_mtv )/milyar,
     Mevcut_yakit_vergisi_OTV_KDV              = sum(sales*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
     OTV_ve_hurda_yakit_vergisi_OTV_KDV        = sum(hurda_tesvikli_satis_miktari*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
     OTV_hurda_finansman_yakit_vergisi_OTV_KDV = sum(kredi_indirimli_satis*toplam_yakit_tuketimi*yakit_vergisi)/milyar,
@@ -37,7 +37,7 @@ HDV_vergi_gelirleri <- hdv_data %>%
 
 
 for (i in 2:5) {
-  for (j in 11:16) {
+  for (j in 11:18) {
     HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j]+
       HDV_vergi_gelirleri[i-1,j]
   }
@@ -45,7 +45,7 @@ for (i in 2:5) {
 #
 #
 for (i in 2:5) {
-  for (j in 17) {
+  for (j in 19) {
     HDV_vergi_gelirleri[i,j] <- HDV_vergi_gelirleri[i,j]+
       HDV_vergi_gelirleri[i-1,j]
   }
@@ -87,21 +87,21 @@ HDV_toplam_vergi <- HDV_vergi_gelirleri %>% mutate(
     OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
     Kredi_faiz_indirimi_maliyeti,
   
-  # Hurda_tesvikli_co2_araliklari_toplam_vergi= 
-  #   Hurda_tesvikli_otv_geliri +
-  #   Hurda_tesvikli_kdv_geliri+
-  #   Hurda_tesvikli_mtv_geliri_co2_araliklari+
-  #   OTV_ve_hurda_yakit_vergisi_OTV_KDV,
-  
-  # Kredi_indirimli_co2_araliklari_toplam_vergi=
-  #   Kredi_indirimli_otv_geliri+
-  #   Kredi_indirimli_kdv_geliri+
-  #   Kredi_indirimli_mtv_geliri_co2_araliklari+
-  #   OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
-  #   Kredi_faiz_indirimi_maliyeti
+  Hurda_tesvikli_arttirilmis_mtv_toplam_vergi=
+    Hurda_tesvikli_otv_geliri +
+    Hurda_tesvikli_kdv_geliri+
+    Hurda_tesvikli_arttirilmis_mtv_geliri+
+    OTV_ve_hurda_yakit_vergisi_OTV_KDV,
+
+  Kredi_indirimli_arttirilmis_mtv_toplam_vergi=
+    Kredi_indirimli_otv_geliri+
+    Kredi_indirimli_kdv_geliri+
+    Kredi_indirimli_arttirilmis_mtv_geliri+
+    OTV_hurda_finansman_yakit_vergisi_OTV_KDV+
+    Kredi_faiz_indirimi_maliyeti
   
 ) %>% 
-  select(year,Mecut_toplam_vergi:Kredi_indirimli_sadece_co2_toplam_vergi)
+  select(year,Mecut_toplam_vergi:Kredi_indirimli_arttirilmis_mtv_toplam_vergi)
 
 
 ozet_HDV_result_path <- paste(output_path,"HDV Ozet toplam vergi",sep="/")

@@ -66,9 +66,9 @@ dizel_litre_otv  <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[2
 arac_yillik_km     <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[3,2]
 benzin_litre_kdv <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[4,2]
 dizel_litre_kdv  <-  import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[5,2]
-
-
-
+PC_yillik_km <- import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[6,2]
+LCV_yillik_km <- import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[7,2]
+HDV_yillik_km <- import("r_input/yakit_tuketimi.xlsx",sheet="degiskenler")[8,2]
 
 #hurda tesviki----
 yeni_arac_indirim_orani_grup1 <- import("r_input/hurda_tesviki.xlsx",sheet="binek_arac") [1,2]

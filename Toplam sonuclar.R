@@ -56,7 +56,7 @@ Toplam_sonuclar <- data_frame(
   
   
 ) %>% 
-  select(Kredi_indirimli_toplam_talep,Kredi_indirimli_vergi_degisimi)
+  select(Mevcut_toplam_talep,Kredi_indirimli_toplam_talep,Kredi_indirimli_vergi_degisimi)
 
 
 toplam_sonuclar_result_path <- paste(output_path,"Toplam Sonuclar",sep="/")

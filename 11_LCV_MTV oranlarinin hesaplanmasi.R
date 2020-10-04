@@ -9,7 +9,7 @@ lcv_data$mtv_grubu<- case_when(
 lcv_data$govde_tipi=="Van" & between(lcv_data$agirlik,0,Inf) & between(lcv_data$engine_displacement,0,1900) ~ 1,
 lcv_data$govde_tipi=="Van" & between(lcv_data$agirlik,0,Inf) & between(lcv_data$engine_displacement,1901,Inf) ~ 2,
 
-lcv_data$govde_tipi=="Minibüs" & between(lcv_data$agirlik,0,Inf) & between(lcv_data$engine_displacement,0,Inf) ~ 3,
+lcv_data$govde_tipi=="Minibus" ~ 3,
 
 lcv_data$govde_tipi=="Kamyonet" & between(lcv_data$agirlik,0,1500) & between(lcv_data$engine_displacement,0,Inf) ~ 4,
 lcv_data$govde_tipi=="Kamyonet"&between(lcv_data$agirlik,1501,3500)&between(lcv_data$engine_displacement,0,Inf) ~ 5,

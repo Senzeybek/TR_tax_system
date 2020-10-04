@@ -37,6 +37,10 @@ hdv_data$yeni_mtv_sadece_co2 <- hdv_data$co2*hdv_mtv_per_co2
 hdv_data$yeni_lifetime_mtv_sadece_co2 <- hdv_data$yeni_mtv_sadece_co2*arac_omru
 
 
+# Mevcut MTV oranlarinin arttirilmasi
+
+hdv_data$arttirilmis_mtv <-hdv_data$lifetime_mtv * 1.20
+
 # 
 # # Opsiyon3: CO2 araliklarina gore vergilendirme ----
 # 

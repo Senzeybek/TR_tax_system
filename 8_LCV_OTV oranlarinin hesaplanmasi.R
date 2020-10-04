@@ -20,7 +20,7 @@ lcv_data <- lcv_data%>% filter(year !=2020)
 
 lcv_data <- lcv_data %>% mutate(eski_otv_grubu = case_when(
   govde_tipi=="Van" ~ 1,
-  govde_tipi=="Minibüs" ~ 2,
+  govde_tipi=="Minibus" ~ 2,
   govde_tipi=="Kamyonet" ~ 3,
   govde_tipi=="Pick-Up" ~ 4,
 ))
@@ -28,7 +28,7 @@ lcv_data <- lcv_data %>% mutate(eski_otv_grubu = case_when(
 #net fiyat bulunmasi ----
 lcv_data <- lcv_data %>% mutate(eski_otv_orani= case_when(
   str_detect(segment,"Kombi Van") ~ 0.15, 
-  govde_tipi=="Minibüs"  ~ 0.056,
+  govde_tipi=="Minibus"  ~ 0.056,
   TRUE ~ 0.04
 ))
 
