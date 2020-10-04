@@ -103,6 +103,6 @@ Binek_summary$Gelir<- str_replace_all(Binek_summary$Gelir,"_"," ")
 
 talep_gelir_result_path <- paste(output_path,"Talep ve gelirdeki degisim ozeti",sep="/")
 talep_gelir_result_path <- paste(talep_gelir_result_path,"xlsx",sep = ".")
-write.xlsx(Binek_summary, file=talep_gelir_result_path, sheetName="Binek summary", row.names=FALSE)
+export(Binek_summary, talep_gelir_result_path, which="Binek summary")
 
 
