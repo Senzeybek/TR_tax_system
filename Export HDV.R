@@ -113,7 +113,7 @@ export(HDV_toplam_vergi,ozet_HDV_result_path,sheet="binek")
 
 # Yerli - Yabanci oranlari degisimi
 
-HDV_uretim_grup_summary <-  hdv_data %>% group_by(year#,uretim
+HDV_uretim_grup_summary <-  hdv_data %>% group_by(year,uretim
                                                   ) %>% 
   summarise(mevcut_satis        = sum(sales,na.rm = T),
             yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
@@ -135,9 +135,24 @@ HDV_uretim_grup_summary_path <- paste(output_path,"HDV Yerli-Ithal degisim ozeti
 HDV_uretim_grup_summary_path <- paste(HDV_uretim_grup_summary_path,"xlsx",sep = ".")
 export(HDV_uretim_grup_summary,HDV_uretim_grup_summary_path)
 
+# ithal-yerli_toplam_ozet
+HDV_uretim_grup_summary$arac_tipi <- "HDV"
+LCV_uretim_grup_summary$arac_tipi <- "LCV"
+uretim_grup_summary$arac_tipi <- "PC"
+yerli_ithal <-  rbind(HDV_uretim_grup_summary,LCV_uretim_grup_summary)
+yerli_ithal <- rbind(yerli_ithal,uretim_grup_summary)
+yerli_ithal_dagilimi_toplam <-  yerli_ithal %>% group_by(year,uretim) %>% summarise(mevcut_toplam=sum(mevcut_satis),
+                                                    yeni_toplam = sum(yeni_satis),
+                                                    hurda_tesvikli_satis_toplam= sum(hurda_tesvikli_satis),
+                                                    kredi_indirimli_satis_toplam= sum(kredi_indirimli_satis)) %>% 
+  mutate(mevcut_toplam_pay=mevcut_toplam/sum(mevcut_toplam),
+         yeni_toplam_pay = yeni_toplam/sum(yeni_toplam),
+         hurda_tesvikli_satis_toplam_pay = hurda_tesvikli_satis_toplam/sum(hurda_tesvikli_satis_toplam),
+         kredi_indirimli_satis_toplam_pay = kredi_indirimli_satis_toplam/sum(kredi_indirimli_satis_toplam))
 
-
-
+yerli_ithal_uretim_grup_summary_path <- paste(output_path,"Yerli-Ithal toplam Ozet",sep="/")
+yerli_ithal_uretim_grup_summary_path <- paste(yerli_ithal_uretim_grup_summary_path,"xlsx",sep = ".")
+export(yerli_ithal_dagilimi_toplam,yerli_ithal_uretim_grup_summary_path)
 
 
 

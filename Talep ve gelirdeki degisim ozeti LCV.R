@@ -42,7 +42,7 @@ LCV_gecici <- LCV_vergi_gelirleri %>%
       Mevcut_muhtemel_MTV_geliri,
     
     Devlet_gelirlerindeki_degisim_Sadece_CO2ye_gore_vergilendirme_senaryosu =
-      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri)-
+      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+ Kredi_faiz_indirimi_maliyeti)-
          (Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri))+
       MTV_degisimi_Sadece_CO2ye_gore_vergilendirme_senaryosu,
     
@@ -53,7 +53,7 @@ LCV_gecici <- LCV_vergi_gelirleri %>%
       Mevcut_muhtemel_MTV_geliri,
     
     Devlet_gelirlerindeki_degisim_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu =
-      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri)-
+      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+ Kredi_faiz_indirimi_maliyeti)-
          (Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri))+
       MTV_degisimi_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu,
     
@@ -68,7 +68,7 @@ LCV_gecici <- LCV_vergi_gelirleri %>%
     
     
     Devlet_gelirlerindeki_toplam_degisim_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu=
-      MTV_degisimi_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu+
+      Devlet_gelirlerindeki_degisim_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu+
       Yakit_gelirlerindeki_degisim
 
   )  

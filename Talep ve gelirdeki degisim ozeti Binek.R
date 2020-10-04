@@ -80,11 +80,11 @@ Binek_gecici <- Binek_arac_vergi_gelirleri %>%
       Yakit_gelirlerindeki_degisim,
     
     Devlet_gelirlerindeki_toplam_degisim_OTV_gruplari_ve_CO2ye_gore_vergilendirme_senaryosu =
-      MTV_degisimi_OTV_gruplari_ve_CO2ye_gore_vergilendirme_senaryosu+
+      Devlet_gelirlerindeki_degisim_OTV_gruplari_ve_CO2ye_gore_vergilendirme_senaryosu+
       Yakit_gelirlerindeki_degisim,
     
     Devlet_gelirlerindeki_toplam_degisim_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu=
-      MTV_degisimi_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu+
+      Devlet_gelirlerindeki_degisim_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu+
       Yakit_gelirlerindeki_degisim
 
 )  

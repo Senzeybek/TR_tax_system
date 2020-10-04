@@ -42,7 +42,7 @@ HDV_gecici <- HDV_vergi_gelirleri %>%
       Mevcut_muhtemel_MTV_geliri,
     
     Devlet_gelirlerindeki_degisim_Sadece_CO2ye_gore_vergilendirme_senaryosu =
-      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri)-
+      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri+ Kredi_faiz_indirimi_maliyeti)-
          (Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri))+
       MTV_degisimi_Sadece_CO2ye_gore_vergilendirme_senaryosu,
     
@@ -53,7 +53,7 @@ HDV_gecici <- HDV_vergi_gelirleri %>%
       Mevcut_muhtemel_MTV_geliri,
     
     Devlet_gelirlerindeki_degisim_arttirilmis_mtvye_gore_vergilendirme_senaryosu =
-      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri)-
+      ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri + Kredi_faiz_indirimi_maliyeti)-
          (Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri))+
       MTV_degisimi_arttirilmis_mtvye_gore_vergilendirme_senaryosu,
     
