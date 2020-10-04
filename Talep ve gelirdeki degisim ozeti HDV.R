@@ -15,7 +15,7 @@ HDV_gecici <- HDV_vergi_gelirleri %>%
     HDV_vergi_degisimi_Sadece_CO2ye_gore_vergilendirme_senaryosu =
       HDV_toplam_vergi$Kredi_indirimli_sadece_co2_toplam_vergi -
       HDV_toplam_vergi$Mecut_toplam_vergi,
-    HDV_vergi_degisimi_OTV_gruplari_ve_arttirilmis_mtvna_gore_vergilendirme_senaryosu =
+    HDV_vergi_degisimi_arttirilmis_mtvye_gore_vergilendirme_senaryosu =
       HDV_toplam_vergi$Kredi_indirimli_arttirilmis_mtv_toplam_vergi-
       HDV_toplam_vergi$Mecut_toplam_vergi,
     
@@ -48,14 +48,14 @@ HDV_gecici <- HDV_vergi_gelirleri %>%
     
     
     
-    MTV_degisimi_OTV_gruplari_ve_arttirilmis_mtvna_gore_vergilendirme_senaryosu =
+    MTV_degisimi_arttirilmis_mtvye_gore_vergilendirme_senaryosu =
       HDV_vergi_gelirleri$Kredi_indirimli_arttirilmis_mtv_geliri-
       Mevcut_muhtemel_MTV_geliri,
     
-    Devlet_gelirlerindeki_degisim_OTV_gruplari_ve_arttirilmis_mtvna_gore_vergilendirme_senaryosu =
+    Devlet_gelirlerindeki_degisim_arttirilmis_mtvye_gore_vergilendirme_senaryosu =
       ((Kredi_indirimli_otv_geliri+Kredi_indirimli_kdv_geliri)-
          (Mevcut_muhtemel_OTV_geliri+Mevcut_muhtemel_KDV_geliri))+
-      MTV_degisimi_OTV_gruplari_ve_arttirilmis_mtvna_gore_vergilendirme_senaryosu,
+      MTV_degisimi_arttirilmis_mtvye_gore_vergilendirme_senaryosu,
     
     #Yakit etkisi ----
     Yakit_gelirlerindeki_degisim = 
@@ -66,7 +66,9 @@ HDV_gecici <- HDV_vergi_gelirleri %>%
       Devlet_gelirlerindeki_degisim_Sadece_CO2ye_gore_vergilendirme_senaryosu+
       Yakit_gelirlerindeki_degisim,
     
-    
+    Devlet_gelirlerindeki_toplam_degisim_arttirilmis_mtvye_gore_vergilendirme_senaryosu =
+      Devlet_gelirlerindeki_degisim_arttirilmis_mtvye_gore_vergilendirme_senaryosu+
+      Yakit_gelirlerindeki_degisim,
   )  
 HDV_gecici <- HDV_gecici %>% select(yil:ncol(HDV_gecici)) 
 

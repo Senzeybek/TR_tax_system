@@ -66,6 +66,10 @@ LCV_gecici <- LCV_vergi_gelirleri %>%
       Devlet_gelirlerindeki_degisim_Sadece_CO2ye_gore_vergilendirme_senaryosu+
       Yakit_gelirlerindeki_degisim,
     
+    
+    Devlet_gelirlerindeki_toplam_degisim_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu=
+      MTV_degisimi_OTV_gruplari_ve_CO2_araliklarina_gore_vergilendirme_senaryosu+
+      Yakit_gelirlerindeki_degisim
 
   )  
 LCV_gecici <- LCV_gecici %>% select(yil:ncol(LCV_gecici)) 

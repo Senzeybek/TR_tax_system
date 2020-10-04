@@ -95,8 +95,8 @@ lcv_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="L
 #hdv
 hdv_kredi_orani <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [1,2]
 hdv_ortalama_vade <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [2,2]
-hdv_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [5,2]
-
+kamyon_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [5,2]
+otobus_max_indirimli_kredi_miktari <- import("r_input/kredi_indirimi.xlsx",sheet="HDV") [7,2]
 
 # Agustosa kadar yillik satislar----
 odd_agustos_2019<-  odd_2019 %>% select(-eylul:-aralik)

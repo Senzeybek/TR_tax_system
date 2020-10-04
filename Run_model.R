@@ -49,4 +49,4 @@ source("Talep ve gelirdeki degisim ozeti LCV.R")
 
 source("Talep ve gelirdeki degisim ozeti HDV.R")
 
-
+source("Talep ve gelirdeki degisim ozeti Total.R")
