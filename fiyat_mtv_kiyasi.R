@@ -66,7 +66,7 @@ HDV_ortalama_MTV_fiyat_degisimi<-
            mevcut_fiyat+mevcut_toplam_faiz_odemesi,
          yeni_toplam_fiyat = hurda_tesvikli_fiyat + indirimli_faiz_odemesi,
          mevcut_mtv = lifetime_mtv_15_yil,
-         yeni_mtv = yeni_lifetime_mtv_sadece_co2_15_yil,
+         yeni_mtv = arttirilmis_mtv_15_yil,
          fark = yeni_toplam_fiyat - mevcut_toplam_fiyat,
          mtv_farki = yeni_mtv - mevcut_mtv
   ) %>% summarise(satis_farki = weighted.mean(fark,kredi_indirimli_satis),
