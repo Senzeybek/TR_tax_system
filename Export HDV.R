@@ -190,9 +190,9 @@ HDV_MTV_ortalamalari <- hdv_data %>% filter(year==2021) %>%
   summarise(
     Mevcut_MTV_ortalama = weighted.mean(lifetime_mtv,sales),
     Hurda_tesvikli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,hurda_tesvikli_satis_miktari),
-    # Hurda_tesvikli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,hurda_tesvikli_satis_miktari),
+    Hurda_tesvikli_arttirilmis_MTV_ortalama= weighted.mean(arttirilmis_mtv,hurda_tesvikli_satis_miktari),
     Kredi_indirimli_sadece_co2_ortalama_MTV = weighted.mean(yeni_mtv_sadece_co2,kredi_indirimli_satis),
-    # Kredi_indirimli_CO2_araliklarina_dayali_MTV_ortalama= weighted.mean(yeni_lifetime_mtv_co2_araliklari,kredi_indirimli_satis)
+    Kredi_indirimli_arttirilmis_MTV_ortalama= weighted.mean(arttirilmis_mtv,kredi_indirimli_satis)
   )
 # 
 HDV_MTV_ortalamalari_path <- paste(output_path,"HDV MTV ortalamalari",sep="/")
