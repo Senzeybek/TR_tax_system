@@ -73,5 +73,4 @@ hdv_mtv_oranlari$lifetime_mtv_15_yil <-rowSums(hdv_mtv_oranlari %>% select(7:(7+
 hdv_data$lifetime_mtv_15_yil <- hdv_mtv_oranlari$lifetime_mtv_15_yil[match(hdv_data$mtv_grubu,hdv_mtv_oranlari$mtv_grubu)]
 hdv_data$yeni_lifetime_mtv_sadece_co2_15_yil <- hdv_data$yeni_lifetime_mtv_sadece_co2*15
 #hdv_data$arttirilmis_mtv_15_yil <- hdv_data$arttirilmis_mtv*15 # burada 15 sene boyunca hep ilk seneki vergiyi oduyor
-hdv_data$arttirilmis_mtv_15_yil <- rowSums(hdv_mtv_oranlari %>% select(7:(7+15-1))) # mevcut sistemdeki gibi azaliyor burada
-
+hdv_data$arttirilmis_mtv_15_yil <- hdv_data$lifetime_mtv_15_yil*1.2
