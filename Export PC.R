@@ -180,6 +180,32 @@ otv_grup_summary_path <- paste(output_path,"Binek arac OTV gruplarindaki degisim
 otv_grup_summary_path <- paste(otv_grup_summary_path,"xlsx",sep = ".")
 export(otv_grup_summary,otv_grup_summary_path)
 
+#  PC OTV vergi orani ve yakit grubu degisim ----
+
+
+otv_grup_summary_yakit_tipi <-  data %>% group_by(year,mevcut_otv_grubu, powertrain) %>% 
+  summarise( mevcut_satis        = sum(sales,na.rm = T),
+             yeni_otv_ortalamasi = weighted.mean(yeni_toplam_otv_orani, yeni_satis,na.rm=T),
+             grup_yeni_satis          = sum(yeni_satis),
+             grup_hurda_tesvikli_satis= sum(hurda_tesvikli_satis_miktari,na.rm=T),
+             hurda_tesvikli_otv_ortalamasi = weighted.mean(hurda_tesvikli_otv_orani, hurda_tesvikli_satis_miktari,na.rm=T),
+             mevcut_fiyat_ortalamasi = weighted.mean(mevcut_fiyat,sales,na.rm=T),
+             yeni_fiyat_ortalamasi = weighted.mean(yeni_fiyat,yeni_satis,na.rm=T),
+             hurda_fiyat_ortalamasi = weighted.mean(hurda_tesvikli_fiyat,hurda_tesvikli_satis_miktari,na.rm=T),
+             kredi_fiyat_ortalamasi = weighted.mean(hurda_tesvikli_fiyat,kredi_indirimli_satis,na.rm=T),
+             
+  ) %>%
+  mutate(eski_market_payi       = mevcut_satis/sum(mevcut_satis),
+         yeni_market_payi       = grup_yeni_satis/sum(grup_yeni_satis),
+         eski_toplam_talep      = sum(mevcut_satis),
+         yeni_toplam_talep      = sum(grup_yeni_satis),
+         hurda_tesviki_talep   = sum(grup_hurda_tesvikli_satis))
+
+
+otv_grup_summary_yakit_tipi_path <- paste(output_path,"Binek arac OTV gruplarindaki yakit tipine gore degisim ozeti",sep="/")
+otv_grup_summary_yakit_tipi_path <- paste(otv_grup_summary_yakit_tipi_path,"xlsx",sep = ".")
+export(otv_grup_summary_yakit_tipi,otv_grup_summary_yakit_tipi_path)
+
 
 # Yerli - Yabanci oranlari degisimi
 toplam_satis <- data %>% group_by(year) %>% summarise(sum(sales,na.rm=T))
@@ -209,8 +235,8 @@ export(uretim_grup_summary,uretim_grup_summary_path)
 
 # PC secilen modellerin yazdirilmasi ----
 
-yazilacak_id <- c("9939","9940")
-model_karsilastirma<-  data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,year,fiyat,yeni_fiyat,co2,yeni_toplam_otv_orani)
+yazilacak_id <- c("9549","9312","9550","9945","9559","9296","9503","10099","10159")
+model_karsilastirma<-  data %>% filter(year==2021, id %in% yazilacak_id) %>% select(id,model,versiyon,powertrain,engine_displacement,co2,mevcut_otv_grubu,net_fiyat,mevcut_otv_tutari,mevcut_kdv_tutari,mevcut_fiyat,co2_vergisi,yeni_toplam_otv_tutari,yeni_kdv_tutari,yeni_fiyat,yuzde_fiyat_degisimi,sales,yeni_satis)
 
 
 model_karsilastirma_path <- paste(output_path,"Binek arac Secilen model sonuclari",sep="/")

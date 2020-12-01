@@ -43,6 +43,8 @@ source("Toplam sonuclar.R")
 
 source("fiyat_mtv_kiyasi.R")
 
+source("Hurda masrafı.R")
+
 source("Talep ve gelirdeki degisim ozeti Binek.R")
 
 source("Talep ve gelirdeki degisim ozeti LCV.R")

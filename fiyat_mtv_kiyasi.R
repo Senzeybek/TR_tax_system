@@ -1,16 +1,16 @@
 
 # Fiyat- MTV kiyaslamasi 
 
-Binek_model_bazinda_fiyat_mtv_kiyasi <- data %>% filter(id%in% c(9296,9503,9559) , year==2021)  %>% 
+Binek_model_bazinda_fiyat_mtv_kiyasi <- data %>% filter(id%in% c("9549","9312","9550","9945","9559","9296","9503","10099","10159","9305","10136","9287","9560","9939","9551") , year==2021)  %>% 
   mutate(mevcut_toplam_fiyat=
            mevcut_fiyat+mevcut_toplam_faiz_odemesi,
-         yeni_toplam_fiyat = yeni_fiyat + indirimli_faiz_odemesi,
+         yeni_toplam_fiyat = hurda_tesvikli_fiyat + indirimli_faiz_odemesi,
          mevcut_mtv = lifetime_mtv_15_yil,
          yeni_mtv = yeni_lifetime_mtv_co2_araliklari_15_yil,
          fark = yeni_toplam_fiyat - mevcut_toplam_fiyat,
          mtv_farki = yeni_mtv - mevcut_mtv
   ) 
-Binek_model_bazinda_fiyat_mtv_kiyasi <- Binek_model_bazinda_fiyat_mtv_kiyasi %>% select(model,mevcut_toplam_fiyat,yeni_toplam_fiyat,fark,mtv_farki,sales)
+Binek_model_bazinda_fiyat_mtv_kiyasi <- Binek_model_bazinda_fiyat_mtv_kiyasi %>% select(id,mevcut_otv_grubu,model,mevcut_toplam_fiyat,yeni_toplam_fiyat,fark,mtv_farki,sales)
 
 
 #Binek_arac_fiyat_model_kiyasi<- 

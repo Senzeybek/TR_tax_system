@@ -1,0 +1,6 @@
+library(tidyverse)
+data$agirlik <- as.numeric(data$agirlik)
+lcv_data$agirlik <- as.numeric(lcv_data$agirlik)
+view(data %>% group_by(year,uretim) %>% summarise (toplam_satis = sum(kredi_indirimli_satis), toplam_deger = sum(kredi_indirimli_satis*net_fiyat), toplam_agirlik=sum(agirlik*kredi_indirimli_satis)))
+view(lcv_data %>% group_by(year,uretim) %>% summarise (toplam_satis = sum(kredi_indirimli_satis), toplam_deger = sum(kredi_indirimli_satis*net_fiyat), toplam_agirlik=sum(agirlik*kredi_indirimli_satis)))
+view(hdv_data %>% group_by(year,uretim) %>% summarise (toplam_satis = sum(kredi_indirimli_satis), toplam_deger = sum(kredi_indirimli_satis*net_fiyat)))
